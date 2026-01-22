@@ -117,7 +117,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
 
       // Zoom in - slower (0 - 0.4)
       heroTl.to(heroImageRef.current, {
-        scale: 1.06,
+        scale: 1.02,
         duration: 0.4,
         ease: "power1.out",
       }, 0);
