@@ -1,4 +1,4 @@
-import { shows, rushImages, heroImage } from "./shows";
+import { shows, rushImages, heroImage, newPhotos } from "./shows";
 
 export interface PreloadProgress {
   loaded: number;
@@ -34,6 +34,13 @@ export function getCriticalImages(): string[] {
   shows.forEach((show) => {
     if (!images.includes(show.coverImage)) {
       images.push(show.coverImage);
+    }
+  });
+
+  // New photos - add first few from each category
+  [...newPhotos.weddings.slice(0, 2), ...newPhotos.projects.slice(0, 2), ...newPhotos.events].forEach((img) => {
+    if (!images.includes(img)) {
+      images.push(img);
     }
   });
 

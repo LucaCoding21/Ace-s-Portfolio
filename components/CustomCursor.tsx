@@ -102,8 +102,8 @@ export default function CustomCursor() {
       gsap.to(cursorRef.current, {
         width: cursorText ? 80 : 50,
         height: cursorText ? 80 : 50,
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
-        borderColor: "rgba(255, 255, 255, 0.5)",
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        borderColor: "rgba(255, 255, 255, 0.8)",
         duration: 0.3,
         ease: "power2.out",
       });
@@ -112,7 +112,7 @@ export default function CustomCursor() {
         width: 40,
         height: 40,
         backgroundColor: "transparent",
-        borderColor: "rgba(255, 255, 255, 0.3)",
+        borderColor: "rgba(255, 255, 255, 0.6)",
         duration: 0.3,
         ease: "power2.out",
       });
@@ -135,8 +135,7 @@ export default function CustomCursor() {
         style={{
           width: 40,
           height: 40,
-          borderColor: "rgba(255, 255, 255, 0.3)",
-          mixBlendMode: "difference",
+          borderColor: "rgba(255, 255, 255, 0.6)",
         }}
       >
         <span
@@ -152,10 +151,9 @@ export default function CustomCursor() {
       {/* Cursor dot */}
       <div
         ref={cursorDotRef}
-        className={`fixed pointer-events-none z-[9999] w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${
+        className={`fixed pointer-events-none z-[9999] w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${
           isVisible && !isHovering ? "opacity-100" : "opacity-0"
         }`}
-        style={{ mixBlendMode: "difference" }}
       />
     </>
   );

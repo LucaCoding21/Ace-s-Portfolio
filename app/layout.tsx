@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
-import { Playfair_Display, Inter, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Space_Grotesk, Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const playfair = Playfair_Display({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
-  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space",
   display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-inter",
   display: "swap",
 });
@@ -21,21 +22,44 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+};
+
 export const metadata: Metadata = {
-  title: "ACE SUASOLA | Concert Photography",
+  title: "ACE | Concert & Wedding Photographer in Vancouver",
   description:
-    "Concert and music photography portfolio by Ace Suasola. Capturing the energy, chaos, and beauty of live music.",
+    "Vancouver-based concert and wedding photographer. Capturing raw energy at live shows and timeless moments at weddings. Available for bookings in Vancouver, BC and beyond.",
   keywords: [
-    "concert photography",
+    "Vancouver photographer",
+    "concert photography Vancouver",
+    "wedding photographer Vancouver",
     "music photography",
-    "live music",
-    "photographer",
-    "Ace Suasola",
+    "live music photographer",
+    "event photographer Vancouver BC",
+    "wedding photography BC",
+    "Ace photographer",
+    "Vancouver concert photos",
   ],
   openGraph: {
-    title: "ACE SUASOLA | Concert Photography",
-    description: "Capturing the energy, chaos, and beauty of live music.",
+    title: "ACE | Concert & Wedding Photographer in Vancouver",
+    description: "Vancouver-based photographer capturing raw energy at concerts and timeless moments at weddings.",
     type: "website",
+    locale: "en_CA",
+  },
+  other: {
+    "geo.region": "CA-BC",
+    "geo.placename": "Vancouver",
   },
 };
 
@@ -45,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable} ${jetbrains.variable}`}>
+    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrains.variable} ${playfair.variable}`}>
       <body className="font-body bg-primary text-white antialiased">
         <div className="grain-overlay" aria-hidden="true" />
         {children}

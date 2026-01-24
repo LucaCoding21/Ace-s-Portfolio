@@ -28,29 +28,46 @@ body {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent iOS text size adjustment */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Improve touch interaction on mobile */
+@media (hover: none) and (pointer: coarse) {
+  /* Mobile-specific styles */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Ensure buttons have adequate touch targets */
+  button:not([class*="w-"]):not([class*="h-"]) {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-secondary);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-primary);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Selection */
 ::selection {
-  background-color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.9);
   color: var(--bg-primary);
 }
 
@@ -60,7 +77,7 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.03;
+  opacity: 0.025;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
 }
 
@@ -73,67 +90,27 @@ body {
   cursor: none !important;
 }
 
-/* Form input styles */
-.form-input {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--text-secondary);
-  padding: 1rem 0;
-  font-size: 1rem;
-  color: var(--text-primary);
-  width: 100%;
-  transition: border-color 0.3s ease;
+/* Hide hero text when menu is open */
+.menu-open .hero-text {
+  opacity: 0 !important;
+  transition: opacity 0.3s ease;
 }
 
-.form-input:focus {
-  outline: none;
-  border-color: var(--text-primary);
+/* Smooth image loading */
+img {
+  transition: opacity 0.5s ease;
 }
 
-.form-input::placeholder {
-  color: var(--text-secondary);
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 4px;
 }
 
-
-/* Scroll Indicator */
-.scroll-indicator {
-  width: 24px;
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  position: relative;
-  overflow: hidden;
+/* Link hover effects */
+a {
+  transition: color 0.3s ease, border-color 0.3s ease;
 }
-
-.scroll-indicator-track {
-  position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  height: 28px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 1px;
-  overflow: hidden;
-}
-
-.scroll-indicator-thumb {
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 1px;
-  animation: scrollBounce 2s ease-in-out infinite;
-}
-
-@keyframes scrollBounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(20px);
-  }
-}
-
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
@@ -144,4 +121,24 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Safe area insets for notched phones (iPhone X+, etc.) */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+main, section, div {
+  max-width: 100%;
+}
+
+/* Improve scrolling on iOS */
+.overflow-auto,
+.overflow-y-auto,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
 }

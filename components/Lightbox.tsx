@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -13,6 +14,8 @@ interface LightboxProps {
   isOpen: boolean;
   onClose: () => void;
   onNavigate: (index: number) => void;
+  categoryLink?: string;
+  categoryLabel?: string;
 }
 
 export default function Lightbox({
@@ -21,6 +24,8 @@ export default function Lightbox({
   isOpen,
   onClose,
   onNavigate,
+  categoryLink,
+  categoryLabel,
 }: LightboxProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -120,14 +125,14 @@ export default function Lightbox({
       className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center opacity-0"
       onClick={handleClose}
     >
-      {/* Close button */}
+      {/* Close button - larger touch target on mobile */}
       <button
         onClick={handleClose}
-        className="absolute top-6 right-6 z-10 w-12 h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+        className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors touch-manipulation"
         aria-label="Close lightbox"
       >
         <svg
-          className="w-8 h-8"
+          className="w-7 h-7 sm:w-8 sm:h-8"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -141,18 +146,18 @@ export default function Lightbox({
         </svg>
       </button>
 
-      {/* Navigation arrows */}
+      {/* Navigation arrows - larger touch targets */}
       {currentIndex > 0 && (
         <button
           onClick={(e) => {
             e.stopPropagation();
             onNavigate(currentIndex - 1);
           }}
-          className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+          className="absolute left-2 sm:left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors touch-manipulation"
           aria-label="Previous image"
         >
           <svg
-            className="w-8 h-8"
+            className="w-7 h-7 sm:w-8 sm:h-8"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -173,11 +178,11 @@ export default function Lightbox({
             e.stopPropagation();
             onNavigate(currentIndex + 1);
           }}
-          className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+          className="absolute right-2 sm:right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white/60 hover:text-white transition-colors touch-manipulation"
           aria-label="Next image"
         >
           <svg
-            className="w-8 h-8"
+            className="w-7 h-7 sm:w-8 sm:h-8"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -192,10 +197,10 @@ export default function Lightbox({
         </button>
       )}
 
-      {/* Image container */}
+      {/* Image container - responsive sizing */}
       <div
         ref={imageRef}
-        className="relative w-[90vw] h-[80vh] max-w-6xl"
+        className="relative w-[95vw] sm:w-[90vw] h-[70vh] sm:h-[75vh] md:h-[80vh] max-w-6xl"
         onClick={(e) => e.stopPropagation()}
       >
         <Image
@@ -204,14 +209,25 @@ export default function Lightbox({
           fill
           className="object-contain"
           sizes="100vw"
-          quality={90}
+          quality={100}
           priority
         />
       </div>
 
-      {/* Image counter */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 text-sm font-mono">
-        {currentIndex + 1} / {images.length}
+      {/* Bottom bar with counter and gallery link - improved mobile layout */}
+      <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 px-4">
+        <div className="text-white/60 text-xs sm:text-sm font-mono">
+          {currentIndex + 1} / {images.length}
+        </div>
+        {categoryLink && (
+          <Link
+            href={categoryLink}
+            className="px-4 py-2 border border-white/30 text-white text-[10px] sm:text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300 touch-manipulation"
+            onClick={(e) => e.stopPropagation()}
+          >
+            View All {categoryLabel || "Gallery"}
+          </Link>
+        )}
       </div>
     </div>
   );

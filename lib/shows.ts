@@ -9,6 +9,28 @@ const allPhotoNumbers = [
 // Generate all photo paths in randomized order
 export const allPhotos = allPhotoNumbers.map(n => `/images/optimized/new-photos/${n}.jpg`);
 
+// New photos from newpics folder
+export const newPhotos = {
+  projects: [
+    "/images/optimized/newpics/project1.jpg",
+    "/images/optimized/newpics/project2.jpg",
+    "/images/optimized/newpics/project3.jpg",
+    "/images/optimized/newpics/project4.jpg",
+    "/images/optimized/newpics/project5.jpg",
+  ],
+  weddings: [
+    "/images/optimized/newpics/wedding1.jpg",
+    "/images/optimized/newpics/wedding2.jpg",
+    "/images/optimized/newpics/wedding3.jpg",
+    "/images/optimized/newpics/wedding4.jpg",
+    "/images/optimized/newpics/wedding5.jpg",
+  ],
+  events: [
+    "/images/optimized/newpics/jam.jpg",
+    "/images/optimized/newpics/partyface.jpg",
+  ],
+};
+
 // Hero image - Ace's featured photo
 export const heroImage = "/images/optimized/new-photos/ace.jpg";
 
@@ -25,15 +47,31 @@ export interface Show {
   images: string[];
 }
 
-// Single "portfolio" show with all images
+// Category-based portfolios
 export const shows: Show[] = [
   {
-    slug: "portfolio",
-    title: "PORTFOLIO",
+    slug: "concerts",
+    title: "CONCERTS",
     date: "2024",
-    venue: "Various",
+    venue: "Live Music",
     coverImage: allPhotos[0],
     images: allPhotos,
+  },
+  {
+    slug: "weddings",
+    title: "WEDDINGS",
+    date: "2024",
+    venue: "Timeless Moments",
+    coverImage: newPhotos.weddings[0],
+    images: newPhotos.weddings,
+  },
+  {
+    slug: "projects",
+    title: "PROJECTS",
+    date: "2024",
+    venue: "Creative Work",
+    coverImage: newPhotos.projects[0],
+    images: newPhotos.projects,
   },
 ];
 

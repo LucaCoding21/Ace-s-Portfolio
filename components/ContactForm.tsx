@@ -14,10 +14,11 @@ interface FormData {
 }
 
 const shootTypes = [
-  { value: "", label: "Select type of shoot" },
+  { value: "", label: "Select service" },
   { value: "concert", label: "Concert / Live Event" },
-  { value: "festival", label: "Festival" },
-  { value: "promo", label: "Artist Promo" },
+  { value: "wedding", label: "Wedding" },
+  { value: "portrait", label: "Portrait / Headshots" },
+  { value: "event", label: "Event Coverage" },
   { value: "other", label: "Other" },
 ];
 
@@ -32,12 +33,9 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -52,12 +50,10 @@ export default function ContactForm() {
 
     console.log("Form submitted:", formData);
 
-    // Show success state
     setIsSubmitted(true);
     setIsSubmitting(false);
   };
 
-  // Success animation
   useGSAP(
     () => {
       if (!isSubmitted || !successRef.current || !formRef.current) return;
@@ -72,13 +68,7 @@ export default function ContactForm() {
       gsap.fromTo(
         successRef.current,
         { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          delay: 0.3,
-          ease: "power3.out",
-        }
+        { opacity: 1, y: 0, duration: 0.6, delay: 0.3, ease: "power3.out" }
       );
     },
     { dependencies: [isSubmitted] }
@@ -86,35 +76,22 @@ export default function ContactForm() {
 
   if (isSubmitted) {
     return (
-      <div
-        ref={successRef}
-        className="text-center py-16 opacity-0"
-      >
-        <div className="w-16 h-16 mx-auto mb-6 rounded-full border-2 border-white flex items-center justify-center">
-          <svg
-            className="w-8 h-8 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
+      <div ref={successRef} className="py-12 opacity-0">
+        <div className="w-12 h-12 mb-6 rounded-full border border-white/30 flex items-center justify-center">
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="font-display text-3xl text-white mb-4">Message Sent</h3>
-        <p className="text-secondary max-w-md mx-auto">
-          Thanks for reaching out. I&apos;ll get back to you as soon as possible.
+        <h3 className="font-display text-2xl font-bold text-white mb-3">Message Sent</h3>
+        <p className="font-body text-white/50 mb-8">
+          Thanks for reaching out. I'll get back to you soon.
         </p>
         <button
           onClick={() => {
             setIsSubmitted(false);
             setFormData({ name: "", email: "", shootType: "", message: "" });
           }}
-          className="mt-8 text-white/60 hover:text-white underline underline-offset-4 transition-colors"
+          className="font-mono text-xs text-white/50 hover:text-white transition-colors"
         >
           Send another message
         </button>
@@ -123,206 +100,106 @@ export default function ContactForm() {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="space-y-8">
-      {/* Name field */}
-      <div className="relative">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
+      {/* Name */}
+      <div>
+        <label htmlFor="name" className="block font-mono text-[10px] sm:text-xs text-white/40 tracking-widest uppercase mb-2 sm:mb-3">
+          Name
+        </label>
         <input
           type="text"
           name="name"
           id="name"
           value={formData.name}
           onChange={handleChange}
-          onFocus={() => setFocusedField("name")}
-          onBlur={() => setFocusedField(null)}
           required
-          className="form-input peer"
-          placeholder=" "
-        />
-        <label
-          htmlFor="name"
-          className={`absolute left-0 transition-all duration-300 pointer-events-none ${
-            formData.name || focusedField === "name"
-              ? "text-xs -top-4 text-white"
-              : "text-base top-4 text-secondary"
-          }`}
-        >
-          Name
-        </label>
-        <div
-          className={`absolute bottom-0 left-0 h-0.5 bg-white transition-all duration-300 ${
-            focusedField === "name" ? "w-full" : "w-0"
-          }`}
+          className="w-full bg-transparent border-b border-white/20 py-3 font-body text-base sm:text-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/60 transition-colors"
+          placeholder="Your name"
         />
       </div>
 
-      {/* Email field */}
-      <div className="relative">
+      {/* Email */}
+      <div>
+        <label htmlFor="email" className="block font-mono text-[10px] sm:text-xs text-white/40 tracking-widest uppercase mb-2 sm:mb-3">
+          Email
+        </label>
         <input
           type="email"
           name="email"
           id="email"
           value={formData.email}
           onChange={handleChange}
-          onFocus={() => setFocusedField("email")}
-          onBlur={() => setFocusedField(null)}
           required
-          className="form-input peer"
-          placeholder=" "
-        />
-        <label
-          htmlFor="email"
-          className={`absolute left-0 transition-all duration-300 pointer-events-none ${
-            formData.email || focusedField === "email"
-              ? "text-xs -top-4 text-white"
-              : "text-base top-4 text-secondary"
-          }`}
-        >
-          Email
-        </label>
-        <div
-          className={`absolute bottom-0 left-0 h-0.5 bg-white transition-all duration-300 ${
-            focusedField === "email" ? "w-full" : "w-0"
-          }`}
+          className="w-full bg-transparent border-b border-white/20 py-3 font-body text-base sm:text-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/60 transition-colors"
+          placeholder="your@email.com"
         />
       </div>
 
-      {/* Shoot type dropdown */}
-      <div className="relative">
-        <select
-          name="shootType"
-          id="shootType"
-          value={formData.shootType}
-          onChange={handleChange}
-          onFocus={() => setFocusedField("shootType")}
-          onBlur={() => setFocusedField(null)}
-          required
-          className="form-input peer appearance-none cursor-pointer"
-        >
-          {shootTypes.map((type) => (
-            <option
-              key={type.value}
-              value={type.value}
-              className="bg-primary text-white"
-            >
-              {type.label}
-            </option>
-          ))}
-        </select>
-        <label
-          htmlFor="shootType"
-          className={`absolute left-0 transition-all duration-300 pointer-events-none ${
-            formData.shootType || focusedField === "shootType"
-              ? "text-xs -top-4 text-white"
-              : "text-base top-4 text-secondary"
-          }`}
-        >
-          Type of Shoot
+      {/* Service type */}
+      <div>
+        <label htmlFor="shootType" className="block font-mono text-[10px] sm:text-xs text-white/40 tracking-widest uppercase mb-2 sm:mb-3">
+          Service
         </label>
-        <svg
-          className="absolute right-0 top-4 w-5 h-5 text-secondary pointer-events-none"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={1.5}
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-        <div
-          className={`absolute bottom-0 left-0 h-0.5 bg-white transition-all duration-300 ${
-            focusedField === "shootType" ? "w-full" : "w-0"
-          }`}
-        />
+        <div className="relative">
+          <select
+            name="shootType"
+            id="shootType"
+            value={formData.shootType}
+            onChange={handleChange}
+            required
+            className="w-full bg-transparent border-b border-white/20 py-3 font-body text-base sm:text-lg text-white appearance-none cursor-pointer focus:outline-none focus:border-white/60 transition-colors"
+          >
+            {shootTypes.map((type) => (
+              <option key={type.value} value={type.value} className="bg-[#0a0a0a] text-white">
+                {type.label}
+              </option>
+            ))}
+          </select>
+          <svg
+            className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       </div>
 
-      {/* Message field */}
-      <div className="relative">
+      {/* Message */}
+      <div>
+        <label htmlFor="message" className="block font-mono text-[10px] sm:text-xs text-white/40 tracking-widest uppercase mb-2 sm:mb-3">
+          Message
+        </label>
         <textarea
           name="message"
           id="message"
           value={formData.message}
           onChange={handleChange}
-          onFocus={() => setFocusedField("message")}
-          onBlur={() => setFocusedField(null)}
           required
           rows={4}
-          className="form-input peer resize-none"
-          placeholder=" "
-        />
-        <label
-          htmlFor="message"
-          className={`absolute left-0 transition-all duration-300 pointer-events-none ${
-            formData.message || focusedField === "message"
-              ? "text-xs -top-4 text-white"
-              : "text-base top-4 text-secondary"
-          }`}
-        >
-          Message
-        </label>
-        <div
-          className={`absolute bottom-0 left-0 h-0.5 bg-white transition-all duration-300 ${
-            focusedField === "message" ? "w-full" : "w-0"
-          }`}
+          className="w-full bg-transparent border-b border-white/20 py-3 font-body text-base sm:text-lg text-white placeholder:text-white/30 focus:outline-none focus:border-white/60 transition-colors resize-none"
+          placeholder="Tell me about your project..."
         />
       </div>
 
-      {/* Submit button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="relative w-full py-4 bg-white text-black font-body text-sm tracking-widest uppercase overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed transition-opacity"
+        className="mt-6 sm:mt-8 w-full py-3 sm:py-4 bg-white text-black font-body text-sm tracking-widest uppercase hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all touch-manipulation"
       >
-        <span
-          className={`inline-flex items-center gap-2 transition-transform duration-300 ${
-            isSubmitting ? "-translate-y-10" : "translate-y-0"
-          }`}
-        >
-          Send Message
-          <svg
-            className="w-4 h-4 transition-transform group-hover:translate-x-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M14 5l7 7m0 0l-7 7m7-7H3"
-            />
-          </svg>
-        </span>
-        <span
-          className={`absolute inset-0 flex items-center justify-center transition-transform duration-300 ${
-            isSubmitting ? "translate-y-0" : "translate-y-10"
-          }`}
-        >
-          <svg
-            className="w-5 h-5 animate-spin"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-        </span>
-
-        {/* Hover effect */}
-        <div className="absolute inset-0 bg-black/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+        {isSubmitting ? (
+          <span className="inline-flex items-center gap-2">
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            Sending...
+          </span>
+        ) : (
+          "Send Message"
+        )}
       </button>
     </form>
   );

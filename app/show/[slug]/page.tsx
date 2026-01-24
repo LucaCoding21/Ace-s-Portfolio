@@ -107,8 +107,8 @@ export default function ShowPage() {
       <CustomCursor />
       <Navigation />
 
-      {/* Hero Section */}
-      <div className="relative h-[70vh] overflow-hidden">
+      {/* Hero Section - responsive height */}
+      <div className="relative h-[50vh] sm:h-[60vh] md:h-[70vh] overflow-hidden">
         <div
           ref={heroRef}
           className="absolute inset-0"
@@ -119,36 +119,36 @@ export default function ShowPage() {
             fill
             className="object-cover"
             sizes="100vw"
-            quality={90}
+            quality={100}
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-primary" />
         </div>
 
         {/* Hero content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-16 px-8">
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-12 md:pb-16 px-4 sm:px-8">
           <h1
             ref={titleRef}
-            className="font-display text-5xl md:text-7xl lg:text-8xl text-white text-center tracking-tight"
+            className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-white text-center tracking-tight"
           >
             {show.title}
           </h1>
-          <div className="flex items-center gap-4 mt-4 text-secondary">
-            <span className="text-sm tracking-widest uppercase">{show.date}</span>
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-3 sm:mt-4 text-secondary">
+            <span className="text-xs sm:text-sm tracking-widest uppercase">{show.date}</span>
             {show.venue && (
               <>
-                <span className="text-white/30">/</span>
-                <span className="text-sm tracking-widest uppercase">{show.venue}</span>
+                <span className="text-white/30 hidden sm:inline">/</span>
+                <span className="text-xs sm:text-sm tracking-widest uppercase">{show.venue}</span>
               </>
             )}
           </div>
         </div>
       </div>
 
-      {/* Gallery Grid */}
-      <section ref={galleryRef} className="px-4 md:px-8 py-16 md:py-24">
+      {/* Gallery Grid - improved mobile spacing */}
+      <section ref={galleryRef} className="px-3 sm:px-4 md:px-8 py-12 sm:py-16 md:py-24">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4 md:gap-6">
             {show.images.map((image, index) => (
               <div
                 key={index}
@@ -163,32 +163,33 @@ export default function ShowPage() {
                   src={image}
                   alt={`${show.title} - Image ${index + 1}`}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
-                  quality={85}
+                  className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                  sizes="100vw"
+                  quality={100}
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Show navigation */}
+      {/* Show navigation - improved mobile layout */}
       <section className="border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-16">
-          <div className="flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 sm:py-12 md:py-16">
+          {/* Mobile: Stack vertically, Desktop: Horizontal */}
+          <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-4">
             {/* Previous show */}
-            <div className="flex-1">
+            <div className="flex-1 w-full sm:w-auto order-2 sm:order-1">
               {prevShow ? (
                 <Link
                   href={`/show/${prevShow.slug}`}
-                  className="group inline-flex flex-col items-start"
+                  className="group inline-flex flex-col items-center sm:items-start w-full sm:w-auto"
                 >
-                  <span className="text-secondary text-xs tracking-widest uppercase mb-2">
+                  <span className="text-secondary text-[10px] sm:text-xs tracking-widest uppercase mb-1 sm:mb-2">
                     Previous
                   </span>
-                  <span className="font-display text-xl md:text-2xl text-white group-hover:text-white/70 transition-colors">
+                  <span className="font-display text-lg sm:text-xl md:text-2xl text-white group-hover:text-white/70 transition-colors text-center sm:text-left">
                     {prevShow.title}
                   </span>
                 </Link>
@@ -199,23 +200,23 @@ export default function ShowPage() {
 
             {/* Back to gallery */}
             <Link
-              href="/"
-              className="px-6 py-3 border border-white/20 text-white text-sm tracking-widest uppercase hover:bg-white hover:text-black transition-colors"
+              href="/work"
+              className="order-1 sm:order-2 px-5 sm:px-6 py-2.5 sm:py-3 border border-white/20 text-white text-xs sm:text-sm tracking-widest uppercase hover:bg-white hover:text-black transition-colors touch-manipulation"
             >
-              All Shows
+              All Work
             </Link>
 
             {/* Next show */}
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 w-full sm:w-auto flex justify-center sm:justify-end order-3">
               {nextShow ? (
                 <Link
                   href={`/show/${nextShow.slug}`}
-                  className="group inline-flex flex-col items-end"
+                  className="group inline-flex flex-col items-center sm:items-end w-full sm:w-auto"
                 >
-                  <span className="text-secondary text-xs tracking-widest uppercase mb-2">
+                  <span className="text-secondary text-[10px] sm:text-xs tracking-widest uppercase mb-1 sm:mb-2">
                     Next
                   </span>
-                  <span className="font-display text-xl md:text-2xl text-white group-hover:text-white/70 transition-colors">
+                  <span className="font-display text-lg sm:text-xl md:text-2xl text-white group-hover:text-white/70 transition-colors text-center sm:text-right">
                     {nextShow.title}
                   </span>
                 </Link>
@@ -228,8 +229,8 @@ export default function ShowPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between text-secondary text-sm">
+      <footer className="border-t border-white/10 py-6 sm:py-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between text-secondary text-xs sm:text-sm">
           <span>&copy; {new Date().getFullYear()} Ace Suasola</span>
           <Link
             href="/contact"
