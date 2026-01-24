@@ -229,7 +229,49 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         });
       }
 
-      ScrollTrigger.refresh();
+      // Delayed refresh to ensure proper calculations after layout settles
+      const refreshTimeout = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+
+      // Also refresh when all images are loaded
+      const handleLoad = () => {
+        ScrollTrigger.refresh();
+      };
+      window.addEventListener('load', handleLoad);
+
+      // Additional refresh after images in this section load
+      const images = sectionRef.current?.querySelectorAll('img');
+      let loadedCount = 0;
+      const totalImages = images?.length || 0;
+
+      const onImageLoad = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          ScrollTrigger.refresh();
+        }
+      };
+
+      images?.forEach((img) => {
+        if (img.complete) {
+          loadedCount++;
+        } else {
+          img.addEventListener('load', onImageLoad);
+        }
+      });
+
+      // If all images were already loaded
+      if (loadedCount === totalImages && totalImages > 0) {
+        ScrollTrigger.refresh();
+      }
+
+      return () => {
+        clearTimeout(refreshTimeout);
+        window.removeEventListener('load', handleLoad);
+        images?.forEach((img) => {
+          img.removeEventListener('load', onImageLoad);
+        });
+      };
     }, sectionRef);
 
     return () => ctx.revert();
