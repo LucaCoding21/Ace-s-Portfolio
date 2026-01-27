@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Loader from "@/components/Loader";
 import HeroSequence from "@/components/HeroSequence";
 import SecondAceSection from "@/components/SecondAceSection";
@@ -9,8 +9,21 @@ import CustomCursor from "@/components/CustomCursor";
 
 type LoadingPhase = "loading" | "sequence" | "complete";
 
+const LOADER_SHOWN_KEY = "ace_loader_shown";
+
 export default function Home() {
-  const [phase, setPhase] = useState<LoadingPhase>("loading");
+  // Start with null to avoid hydration mismatch, then check sessionStorage
+  const [phase, setPhase] = useState<LoadingPhase | null>(null);
+
+  useEffect(() => {
+    // Check if loader was already shown this session
+    const loaderShown = sessionStorage.getItem(LOADER_SHOWN_KEY);
+    if (loaderShown) {
+      setPhase("complete");
+    } else {
+      setPhase("loading");
+    }
+  }, []);
 
   const handleLoaderComplete = useCallback(() => {
     setPhase("sequence");

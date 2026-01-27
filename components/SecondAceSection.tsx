@@ -2,6 +2,8 @@
 
 import { useRef, useLayoutEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { allPhotos, newPhotos } from "@/lib/shows";
@@ -9,6 +11,31 @@ import { prefersReducedMotion } from "@/lib/animations";
 import Lightbox from "./Lightbox";
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Arrow button component for section navigation
+function SectionArrow({ href }: { href: string }) {
+  return (
+    <Link
+      href={href}
+      className="inline-block transition-transform duration-300 ease-out hover:scale-[1.4] origin-[24%_76%] relative -translate-y-3 md:-translate-y-4"
+    >
+      <svg
+        viewBox="0 0 50 50"
+        className="w-14 h-14 md:w-20 md:h-20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        {/* Arrow head - long horizontal line at top */}
+        <line x1="5" y1="5" x2="45" y2="5" className="text-white" />
+        {/* Arrow head - long vertical line on right */}
+        <line x1="45" y1="5" x2="45" y2="45" className="text-white" />
+        {/* Short diagonal body/neck */}
+        <line x1="12" y1="38" x2="45" y2="5" className="text-white" />
+      </svg>
+    </Link>
+  );
+}
 
 interface SecondAceSectionProps {
   isVisible: boolean;
@@ -66,6 +93,8 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxCategory, setLightboxCategory] = useState<{ link: string; label: string } | null>(null);
+  const [ctaHovered, setCtaHovered] = useState(false);
+  const [scrollCtaHovered, setScrollCtaHovered] = useState(false);
 
   const openLightbox = (images: string[], index: number, category: { link: string; label: string }) => {
     setLightboxImages(images);
@@ -177,6 +206,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
           end: "bottom bottom",
           pin: scrollRevealTextRef.current,
           pinSpacing: false,
+          refreshPriority: 1,
         });
 
         // Animate images appearing from sides
@@ -213,6 +243,9 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         const isMobileView = window.innerWidth < 768;
         const totalWidth = track.scrollWidth - window.innerWidth;
 
+        // Force GPU layer creation before animation starts
+        gsap.set(track, { force3D: true });
+
         gsap.to(track, {
           x: -totalWidth,
           ease: "none",
@@ -220,11 +253,13 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
             trigger: horizontalRef.current,
             start: "top top",
             end: () => `+=${totalWidth}`,
-            scrub: isMobileView ? 1 : 1.5,
+            scrub: isMobileView ? 0.3 : 0.5, // Reduced scrub for snappier response
             pin: true,
             anticipatePin: 1,
             pinSpacing: true,
             invalidateOnRefresh: true,
+            fastScrollEnd: true,
+            refreshPriority: 1, // Higher priority so it calculates earlier
           },
         });
       }
@@ -298,10 +333,10 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
       <div
         key={key}
         ref={(el) => { refs.current[index] = el; }}
-        className={`relative overflow-hidden group block cursor-pointer ${
-          isLarge ? 'md:col-span-2 aspect-[16/9]' : 'aspect-[4/5] md:aspect-[3/4]'
-        }`}
+        className={`relative overflow-hidden group block cursor-pointer ${isLarge ? 'md:col-span-2 aspect-[16/9]' : 'aspect-[4/5] md:aspect-[3/4]'
+          }`}
         data-cursor-text="View"
+        data-photo-caption={photo.caption}
         onMouseEnter={() => setHoveredIndex(key)}
         onMouseLeave={() => setHoveredIndex(null)}
         onClick={() => openLightbox(
@@ -315,24 +350,21 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
             src={photo.src}
             alt={photo.caption}
             fill
-            className={`object-cover transition-transform duration-700 ease-out ${
-              hoveredIndex === key ? 'scale-[1.02]' : 'scale-100'
-            }`}
+            className={`object-cover transition-transform duration-700 ease-out ${hoveredIndex === key ? 'scale-[1.02]' : 'scale-100'
+              }`}
             style={photo.objectPosition ? { objectPosition: photo.objectPosition } : undefined}
             sizes="100vw"
             quality={100}
           />
         </div>
         <div
-          className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${
-            hoveredIndex === key ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${hoveredIndex === key ? 'opacity-100' : 'opacity-0'
+            }`}
         />
         {/* Hover content */}
         <div
-          className={`absolute bottom-0 left-0 right-0 p-6 md:p-8 transition-all duration-500 ${
-            hoveredIndex === key ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-          }`}
+          className={`absolute bottom-0 left-0 right-0 p-6 md:p-8 transition-all duration-500 ${hoveredIndex === key ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            }`}
         >
           <span className="font-display text-xl md:text-2xl font-bold text-white">
             {photo.caption}
@@ -354,53 +386,59 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
 
         {/* Concerts Section */}
         <div className="relative py-16 sm:py-24 md:py-40 bg-primary">
-        <div className="px-4 sm:px-8 md:px-16 mb-12 sm:mb-16 md:mb-24">
-          <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight">
-            Concerts
-          </h2>
-          <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase mt-4">
-            Live Music Photography
-          </p>
-          <p className="font-body text-white/40 text-base md:text-lg mt-6 max-w-2xl leading-relaxed">
-            Capturing the raw energy and emotion of live performances. From intimate venues to massive festivals, every show tells a unique story.
-          </p>
-        </div>
-
-        <div className="px-4 md:px-8 lg:px-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 max-w-[1800px] mx-auto">
-            {concertPhotos.slice(0, 4).map((photo, index) => {
-              const isLarge = index === 0 || index === 3;
-              return renderGalleryItem(photo, index, 'concert', concertRefs, isLarge, 'concerts', concertPhotos);
-            })}
-            {/* Text - hidden on mobile, right-aligned on desktop */}
-            <div className="hidden md:flex flex-col justify-center items-end p-4 sm:p-8 md:p-12">
-              <h3
-                ref={feelEnergyRef}
-                className="font-display text-[clamp(2rem,8vw,12rem)] font-bold tracking-tight leading-none text-right uppercase bg-clip-text text-transparent"
-                style={{
-                  backgroundImage: "linear-gradient(to top, rgb(234 179 8 / 0.7) 0%, white 0%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Feel<br />the<br />Energy
-              </h3>
+          <div className="px-4 sm:px-8 md:px-16 mb-12 sm:mb-16 md:mb-24 text-right ml-auto">
+            <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight inline-flex items-end gap-4">
+              Concerts
+              <SectionArrow href="/show/concerts" />
+            </h2>
+            <div className="mt-4">
+              <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase">
+                Live Music Photography
+              </p>
             </div>
-            {renderGalleryItem(concertPhotos[4], 4, 'concert', concertRefs, false, 'concerts', concertPhotos)}
+            <p className="font-body text-white/40 text-base md:text-lg mt-6 max-w-2xl leading-relaxed ml-auto">
+              Capturing the raw energy and emotion of live performances. From intimate venues to massive festivals, every show tells a unique story.
+            </p>
+          </div>
+
+          <div className="px-4 md:px-8 lg:px-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 max-w-[1800px] mx-auto">
+              {concertPhotos.slice(0, 4).map((photo, index) => {
+                const isLarge = index === 0 || index === 3;
+                return renderGalleryItem(photo, index, 'concert', concertRefs, isLarge, 'concerts', concertPhotos);
+              })}
+              {/* Text - hidden on mobile, right-aligned on desktop */}
+              <div className="hidden md:flex flex-col justify-center items-end p-4 sm:p-8 md:p-12">
+                <h3
+                  ref={feelEnergyRef}
+                  className="font-display text-[clamp(2rem,8vw,12rem)] font-bold tracking-tight leading-none text-right uppercase bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage: "linear-gradient(to top, rgb(234 179 8 / 0.7) 0%, white 0%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  Feel<br />the<br />Energy
+                </h3>
+              </div>
+              {renderGalleryItem(concertPhotos[4], 4, 'concert', concertRefs, false, 'concerts', concertPhotos)}
+            </div>
           </div>
         </div>
-      </div>
       </div>
 
       {/* Weddings Section */}
       <div className="relative py-16 sm:py-24 md:py-40 bg-primary-light/30">
         <div className="px-4 sm:px-8 md:px-16 mb-12 sm:mb-16 md:mb-24">
-          <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight">
+          <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight inline-flex items-end gap-4">
             Weddings
+            <SectionArrow href="/show/weddings" />
           </h2>
-          <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase mt-4">
-            Timeless Moments
-          </p>
+          <div className="mt-4">
+            <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase">
+              Timeless Moments
+            </p>
+          </div>
           <p className="font-body text-white/40 text-base md:text-lg mt-6 max-w-2xl leading-relaxed">
             Preserving the beauty and emotion of your special day. Every glance, every smile, every tear of joy, captured forever.
           </p>
@@ -441,8 +479,9 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
               {renderGalleryItem(projectPhotos[0], 0, 'project', projectRefs, false, 'projects', projectPhotos)}
             </div>
             <div className="flex flex-col justify-center p-4 sm:p-8 md:p-12 order-1 md:order-none">
-              <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight">
+              <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight inline-flex items-end gap-4">
                 Projects
+                <SectionArrow href="/show/projects" />
               </h2>
               <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase mt-4">
                 Creative Work
@@ -480,12 +519,45 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
             <p className="font-body text-white/40 text-base md:text-lg mt-8 leading-relaxed">
               From the electric atmosphere of live concerts to the intimate moments of a wedding day, I capture the emotions that make each event unique.
             </p>
-            <a
+            <motion.a
               href="/contact"
-              className="inline-block mt-10 px-10 py-4 border-2 border-yellow-500/60 text-yellow-500/60 font-display text-lg tracking-wide uppercase transition-all duration-300 hover:bg-yellow-500/60 hover:text-white"
+              className="inline-block mt-10 relative cursor-pointer"
+              onMouseEnter={() => setScrollCtaHovered(true)}
+              onMouseLeave={() => setScrollCtaHovered(false)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              data-cursor-hover
             >
-              Book a Session
-            </a>
+              {/* White pill container */}
+              <div className="relative px-8 py-3 rounded-full bg-white overflow-hidden">
+                {/* Solid yellow fill on hover */}
+                <motion.div
+                  className="absolute inset-0 bg-yellow-500"
+                  initial={{ x: "-100%" }}
+                  animate={{ x: scrollCtaHovered ? "0%" : "-100%" }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                />
+
+                {/* Text with character stagger */}
+                <div className="relative z-10 flex justify-center">
+                  {"Get in touch".split("").map((char, i) => (
+                    <motion.span
+                      key={i}
+                      className="font-display text-base tracking-wide text-black"
+                      animate={{
+                        y: scrollCtaHovered ? [0, -3, 0] : 0,
+                      }}
+                      transition={{
+                        y: { duration: 0.4, delay: i * 0.02, ease: [0.22, 1, 0.36, 1] },
+                      }}
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            </motion.a>
           </div>
         </div>
 
@@ -493,7 +565,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         {/* Image 1 - Left - Concert */}
         <div
           ref={(el) => { scrollRevealImagesRef.current[0] = el; }}
-          className="absolute -left-8 top-[12%] w-[22vw] aspect-[3/4] overflow-hidden z-0"
+          className="absolute left-8 top-[12%] w-[22vw] aspect-[3/4] overflow-hidden z-0 rounded-sm shadow-2xl"
         >
           <Image
             src={allPhotos[5]}
@@ -507,7 +579,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         {/* Image 2 - Right - Wedding */}
         <div
           ref={(el) => { scrollRevealImagesRef.current[1] = el; }}
-          className="absolute -right-8 top-[22%] w-[24vw] aspect-[4/3] overflow-hidden z-0"
+          className="absolute right-8 top-[22%] w-[24vw] aspect-[4/3] overflow-hidden z-0 rounded-sm shadow-2xl"
         >
           <Image
             src="/images/newpics/wedding5.jpg"
@@ -521,7 +593,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         {/* Image 3 - Left - Project */}
         <div
           ref={(el) => { scrollRevealImagesRef.current[2] = el; }}
-          className="absolute -left-4 top-[45%] w-[20vw] aspect-square overflow-hidden z-0"
+          className="absolute left-12 top-[45%] w-[20vw] aspect-square overflow-hidden z-0 rounded-sm shadow-2xl"
         >
           <Image
             src={newPhotos.projects[2]}
@@ -535,7 +607,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         {/* Image 4 - Right - Concert */}
         <div
           ref={(el) => { scrollRevealImagesRef.current[3] = el; }}
-          className="absolute -right-4 top-[60%] w-[22vw] aspect-[3/4] overflow-hidden z-0"
+          className="absolute right-12 top-[60%] w-[22vw] aspect-[3/4] overflow-hidden z-0 rounded-sm shadow-2xl"
         >
           <Image
             src={allPhotos[25]}
@@ -559,7 +631,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         <div
           ref={horizontalTrackRef}
           className="absolute top-0 left-0 h-full flex items-center gap-3 sm:gap-4 md:gap-8 px-4 sm:px-8 md:px-16 will-change-transform"
-          style={{ width: "fit-content" }}
+          style={{ width: "fit-content", transform: "translateX(0)" }}
         >
           {/* "More Work" intro panel */}
           <div className="flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[40vw] h-[60vh] sm:h-[70vh] flex items-center justify-center">
@@ -583,8 +655,10 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
                 alt={`Gallery photo ${index + 1}`}
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-                sizes="100vw"
+                sizes="(max-width: 768px) 75vw, 35vw"
                 quality={100}
+                priority={index < 3} // Preload first 3 images to prevent layout shift
+                loading={index < 3 ? undefined : "eager"} // Load remaining images eagerly
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute bottom-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -595,84 +669,132 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
             </div>
           ))}
 
-          {/* "Get in Touch" outro panel */}
-          <div className="flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[40vw] h-[60vh] sm:h-[70vh] flex items-center justify-center">
+          {/* "Get in Touch" outro panel - CTA with image reveal */}
+          <div className="flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[50vw] h-[60vh] sm:h-[70vh] flex items-center justify-center">
             <div className="text-center px-4">
-              <p className="font-body text-white/50 text-xs sm:text-sm tracking-widest uppercase mb-2 sm:mb-4">
+              <p className="font-body text-white/50 text-xs sm:text-sm tracking-widest uppercase mb-4 sm:mb-6">
                 Want to work together?
               </p>
-              <h3 className="font-display text-[clamp(1.75rem,5vw,4rem)] font-bold text-white">
-                Get in Touch
-              </h3>
+              <a
+                href="/contact"
+                className="group inline-flex flex-col items-center justify-center cursor-pointer"
+                data-cursor-hover
+                onMouseEnter={() => setCtaHovered(true)}
+                onMouseLeave={() => setCtaHovered(false)}
+              >
+                <div className="inline-flex items-center justify-center">
+                  <span className="font-display text-[clamp(1.75rem,5vw,4rem)] font-bold text-white">
+                    Get in
+                  </span>
+                  <motion.div
+                    className="overflow-hidden mx-2"
+                    initial={{ width: 0 }}
+                    animate={{ width: ctaHovered ? "auto" : 0 }}
+                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                  >
+                    <div className="w-[15vw] sm:w-[10vw] md:w-[7vw] aspect-[3/4] relative rounded-sm overflow-hidden">
+                      <Image
+                        src="/acephoto.jpg"
+                        alt="Ace Suasola"
+                        fill
+                        className="object-cover"
+                        sizes="20vw"
+                      />
+                    </div>
+                  </motion.div>
+                  <span className="font-display text-[clamp(1.75rem,5vw,4rem)] font-bold text-white">
+                    Touch
+                  </span>
+                </div>
+                {/* Animated underline */}
+                <div className="relative w-full h-[2px] mt-2 overflow-hidden">
+                  <motion.div
+                    className="absolute inset-0 bg-white"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: ctaHovered ? 1 : 0 }}
+                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                    style={{ transformOrigin: "left" }}
+                  />
+                  <div className="absolute inset-0 bg-white/30" />
+                </div>
+              </a>
+              <p className="font-body text-white/30 text-xs tracking-wide mt-6">
+                Click to start a conversation
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Footer section with background image */}
-      <div className="relative py-20 sm:py-32 md:py-48 px-4 sm:px-8 md:px-16 min-h-[80vh] sm:min-h-screen flex items-center">
-        {/* Gradient overlay at top for smooth transition from horizontal scroll */}
-        <div className="absolute top-0 left-0 right-0 h-24 md:h-32 bg-gradient-to-b from-primary to-transparent z-[5] pointer-events-none" />
+      {/* Sticky Footer Reveal */}
+      <div
+        className="relative h-screen bg-black"
+        style={{ clipPath: "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)" }}
+      >
+        <div className="fixed bottom-0 left-0 right-0 h-screen w-full">
+          {/* Footer content */}
+          <div className="relative h-full px-4 sm:px-8 md:px-16 flex items-center">
+            {/* Background image - positioned left on mobile */}
+            <div className="absolute inset-0 overflow-hidden">
+              <Image
+                src="/images/footer.jpg"
+                alt="Ace Suasola"
+                fill
+                className="object-cover object-[25%_center] md:object-center"
+                style={{ transform: "scaleX(-1)" }}
+                quality={100}
+              />
+              {/* Gradient overlay for text readability - stronger on left */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+            </div>
 
-        {/* Background image - positioned left on mobile */}
-        <div className="absolute inset-0 overflow-hidden">
-          <Image
-            src="/images/optimized/new-photos/36.jpg"
-            alt="Ace Suasola"
-            fill
-            className="object-cover object-[25%_center] md:object-center"
-            style={{ transform: "scaleX(-1)" }}
-            quality={100}
-          />
-          {/* Darker overlay on mobile for text readability */}
-          <div className="absolute inset-0 bg-black/40 md:bg-black/20" />
-        </div>
+            <div className="relative z-10 max-w-4xl">
+              <h2 className="font-display text-[clamp(1.75rem,6vw,5rem)] font-bold text-white leading-tight">
+                Capturing moments that matter.
+              </h2>
+              <p className="font-body text-white/60 text-sm sm:text-base md:text-lg lg:text-xl mt-6 sm:mt-8 max-w-2xl leading-relaxed">
+                Based in Vancouver, available worldwide. Specializing in concert photography,
+                weddings, and capturing the raw energy of live performances.
+              </p>
 
-        <div className="relative z-10 max-w-4xl">
-          <h2 className="font-display text-[clamp(1.75rem,6vw,5rem)] font-bold text-white leading-tight">
-            Capturing moments that matter.
-          </h2>
-          <p className="font-body text-white/60 text-sm sm:text-base md:text-lg lg:text-xl mt-6 sm:mt-8 max-w-2xl leading-relaxed">
-            Based in Vancouver, available worldwide. Specializing in concert photography,
-            weddings, and capturing the raw energy of live performances.
-          </p>
+              {/* Contact Info */}
+              <div className="mt-10 sm:mt-14">
+                <a
+                  href="mailto:acesuasola@gmail.com"
+                  className="font-body text-sm text-yellow-500/90 tracking-widest uppercase hover:text-yellow-400 transition-colors"
+                >
+                  acesuasola@gmail.com
+                </a>
+              </div>
 
-          {/* Contact Info */}
-          <div className="mt-10 sm:mt-14">
-            <a
-              href="mailto:acesuasola@gmail.com"
-              className="font-body text-sm text-yellow-500/90 tracking-widest uppercase hover:text-yellow-400 transition-colors"
-            >
-              acesuasola@gmail.com
-            </a>
-          </div>
-
-          {/* Social Links */}
-          <div className="mt-6 sm:mt-8 flex flex-wrap gap-4 sm:gap-6">
-            <a
-              href="https://instagram.com/acesuasola"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"
-            >
-              Instagram
-            </a>
-            <a
-              href="https://youtube.com/@AceSuasola"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"
-            >
-              YouTube
-            </a>
-            <a
-              href="https://linkedin.com/in/acesuasola"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"
-            >
-              LinkedIn
-            </a>
+              {/* Social Links */}
+              <div className="mt-6 sm:mt-8 flex flex-wrap gap-4 sm:gap-6">
+                <a
+                  href="https://instagram.com/acesuasola"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"
+                >
+                  Instagram
+                </a>
+                <a
+                  href="https://youtube.com/@AceSuasola"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"
+                >
+                  YouTube
+                </a>
+                <a
+                  href="https://linkedin.com/in/acesuasola"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"
+                >
+                  LinkedIn
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
