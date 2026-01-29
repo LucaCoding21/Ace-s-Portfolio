@@ -242,6 +242,10 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         const track = horizontalTrackRef.current;
         const isMobileView = window.innerWidth < 768;
         const totalWidth = track.scrollWidth - window.innerWidth;
+        // On mobile, reduce the vertical scroll distance so the gallery
+        // doesn't create excessive scroll space. The horizontal content
+        // scrolls faster relative to vertical scroll as a result.
+        const scrollEnd = isMobileView ? totalWidth * 0.6 : totalWidth;
 
         // Force GPU layer creation before animation starts
         gsap.set(track, { force3D: true });
@@ -252,7 +256,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
           scrollTrigger: {
             trigger: horizontalRef.current,
             start: "top top",
-            end: () => `+=${totalWidth}`,
+            end: () => `+=${scrollEnd}`,
             scrub: isMobileView ? 0.3 : 0.5, // Reduced scrub for snappier response
             pin: true,
             anticipatePin: 1,
@@ -728,10 +732,10 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
 
       {/* Sticky Footer Reveal */}
       <div
-        className="relative h-screen bg-black"
+        className="relative h-[60vh] md:h-screen bg-black"
         style={{ clipPath: "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)" }}
       >
-        <div className="fixed bottom-0 left-0 right-0 h-screen w-full">
+        <div className="fixed bottom-0 left-0 right-0 h-[60vh] md:h-screen w-full">
           {/* Footer content */}
           <div className="relative h-full px-4 sm:px-8 md:px-16 flex items-center">
             {/* Background image - positioned left on mobile */}
