@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     siteName: "Ace Suasola Photography",
     images: [
       {
-        url: "/images/newpics/ace.jpg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Ace Suasola, Concert and Wedding Photographer in Vancouver, BC",
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
     description:
       "Ace Suasola is a professional concert and wedding photographer in Vancouver, BC. Live music, weddings, and creative projects.",
     creator: "@acesuasola",
-    images: ["/images/newpics/ace.jpg"],
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
@@ -131,12 +131,12 @@ const structuredData = {
       url: SITE_URL,
       image: {
         "@type": "ImageObject",
-        url: `${SITE_URL}/images/newpics/ace.jpg`,
+        url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
         caption: "Ace Suasola, professional concert and wedding photographer in Vancouver, BC",
       },
-      logo: `${SITE_URL}/images/newpics/ace.jpg`,
+      logo: `${SITE_URL}/og-image.jpg`,
       description:
         "Ace Suasola Photography is a professional concert and wedding photography service based in Vancouver, British Columbia. Specializing in live music photography at festivals and club shows, wedding day coverage from ceremony to reception, and creative portrait and editorial projects. Serving clients across Metro Vancouver, the Fraser Valley, Whistler, and all of British Columbia.",
       address: {
