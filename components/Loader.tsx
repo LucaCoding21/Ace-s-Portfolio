@@ -18,7 +18,7 @@ interface LoaderProps {
 export default function Loader({ onComplete }: LoaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const loaderGroupRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const [displayPercent, setDisplayPercent] = useState(0);
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
   const counterAnimRef = useRef<gsap.core.Tween | null>(null);
@@ -50,7 +50,7 @@ export default function Loader({ onComplete }: LoaderProps) {
     };
   }, []);
 
-  // Animate the counter smoothly
+  // Animate the counter and progress bar smoothly
   useEffect(() => {
     const counter = { value: 0 };
 
@@ -60,6 +60,9 @@ export default function Loader({ onComplete }: LoaderProps) {
       ease: "power2.inOut",
       onUpdate: () => {
         setDisplayPercent(Math.round(counter.value));
+        if (progressRef.current) {
+          progressRef.current.style.width = `${counter.value}%`;
+        }
       },
     });
 
@@ -68,10 +71,10 @@ export default function Loader({ onComplete }: LoaderProps) {
     };
   }, []);
 
-  // Animate out when loading is complete - slide left with line following
+  // Exit animation — clean fade, no jarring horizontal slide
   useGSAP(
     () => {
-      if (!isLoadingComplete || !containerRef.current || !loaderGroupRef.current || !lineRef.current) return;
+      if (!isLoadingComplete || !containerRef.current || !loaderGroupRef.current) return;
 
       const reducedMotion = prefersReducedMotion();
 
@@ -87,30 +90,25 @@ export default function Loader({ onComplete }: LoaderProps) {
       const tl = gsap.timeline();
 
       // Brief pause at 100%
-      tl.to({}, { duration: 0.2 });
+      tl.to({}, { duration: 0.3 });
 
-      // Animate line extending from the right of the percentage to the right edge
-      tl.to(lineRef.current, {
-        width: "100vw",
-        duration: 0.5,
-        ease: "power2.inOut",
+      // Fade out loader content with subtle upward drift
+      tl.to(loaderGroupRef.current, {
+        opacity: 0,
+        y: -20,
+        duration: 0.4,
+        ease: "power2.in",
       });
 
-      // Slide the loader group to the left while line follows
-      // Also fade out the container background so rush shows through
-      tl.to(loaderGroupRef.current, {
-        x: "-100vw",
-        duration: 0.6,
-        ease: "power2.inOut",
-      }, "-=0.2");
-
+      // Fade out entire container
       tl.to(containerRef.current, {
-        backgroundColor: "transparent",
-        duration: 0.3,
-      }, "-=0.4");
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.inOut",
+      }, "-=0.15");
 
-      // Signal completion early so rush starts while loader is exiting
-      tl.call(onComplete, [], "-=0.5");
+      // Signal completion when container is nearly invisible
+      tl.call(onComplete, [], "-=0.1");
     },
     { scope: containerRef, dependencies: [isLoadingComplete] }
   );
@@ -120,7 +118,16 @@ export default function Loader({ onComplete }: LoaderProps) {
       ref={containerRef}
       className="fixed inset-0 z-[100] bg-primary overflow-hidden"
     >
-      {/* Loader group - positioned bottom right */}
+      {/* Thin progress line at the bottom of the screen */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-white/10">
+        <div
+          ref={progressRef}
+          className="h-full bg-white/20"
+          style={{ width: 0 }}
+        />
+      </div>
+
+      {/* Loader group — positioned bottom right */}
       <div
         ref={loaderGroupRef}
         className="absolute bottom-12 right-12 flex items-center gap-4"
@@ -136,13 +143,6 @@ export default function Loader({ onComplete }: LoaderProps) {
         >
           {displayPercent}%
         </span>
-
-        {/* Line that extends to the right */}
-        <div
-          ref={lineRef}
-          className="h-[2px] bg-white/40"
-          style={{ width: 0 }}
-        />
       </div>
     </div>
   );

@@ -26,7 +26,9 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
   const containerRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const heroImageRef = useRef<HTMLDivElement>(null);
+  const kenBurnsRef = useRef<HTMLDivElement>(null);
   const rushTrackRef = useRef<HTMLDivElement>(null);
+  const rushHeroRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
@@ -59,11 +61,12 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
 
   useGSAP(
     () => {
-      if (!isActive || !containerRef.current || !frameRef.current || !rushTrackRef.current || !heroImageRef.current) return;
+      if (!isActive || !containerRef.current || !frameRef.current || !rushTrackRef.current || !heroImageRef.current || !rushHeroRef.current) return;
       if (hasRunRush.current) return;
       hasRunRush.current = true;
 
       const reducedMotion = prefersReducedMotion();
+      const mobile = isMobile();
 
       // Hide text initially
       if (nameRef.current) gsap.set(nameRef.current, { opacity: 0, y: 60 });
@@ -71,9 +74,9 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
       if (scrollIndicatorRef.current) gsap.set(scrollIndicatorRef.current, { opacity: 0 });
 
       if (reducedMotion) {
-        gsap.set(frameRef.current, { width: "100%", height: "100%", borderRadius: "0px" });
-        gsap.set(rushTrackRef.current, { opacity: 0, display: "none" });
-        if (heroImageRef.current) gsap.set(heroImageRef.current, { opacity: 1 });
+        gsap.set(frameRef.current, { clipPath: "inset(0% 0% round 0px)" });
+        gsap.set(rushTrackRef.current, { display: "none" });
+        gsap.set(heroImageRef.current, { opacity: 1 });
         if (gradientRef.current) gsap.set(gradientRef.current, { yPercent: 0, opacity: 1 });
         if (nameRef.current) gsap.set(nameRef.current, { opacity: 1, y: 0 });
         if (subtitleRef.current) gsap.set(subtitleRef.current, { opacity: 1, y: 0 });
@@ -83,99 +86,84 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
         return;
       }
 
-      const tl = gsap.timeline();
-      const mobile = isMobile();
+      // ── Responsive values ──
+      const clipInset = mobile
+        ? "inset(17.5% 4% round 12px)"
+        : "inset(12.5% 7.5% round 12px)";
+      // Single duration for the entire rush+expansion motion
+      const animDuration = mobile ? 2.0 : 3.0;
+      const animEase = "power3.inOut";
 
-      // Responsive initial sizing
-      const initialWidth = mobile ? "92vw" : "85vw";
-      const initialHeight = mobile ? "65vh" : "75vh";
-
-      // Set initial state with GPU acceleration
-      gsap.set(frameRef.current, {
-        width: initialWidth,
-        height: initialHeight,
-        borderRadius: "12px",
-        force3D: true,
-      });
+      // ── Initial state ──
+      gsap.set(frameRef.current, { clipPath: clipInset });
       gsap.set(rushTrackRef.current, { x: 0, force3D: true });
-      gsap.set(heroImageRef.current, { opacity: 0 });
+      // Hero is visible from the start — hidden behind rush track (z-80)
+      gsap.set(heroImageRef.current, { opacity: 1 });
+      if (kenBurnsRef.current) gsap.set(kenBurnsRef.current, { scale: 1, force3D: true });
       if (gradientRef.current) gsap.set(gradientRef.current, { yPercent: 100, opacity: 0 });
 
-      const calcFinalX = () => {
-        if (!rushTrackRef.current) return 0;
-        return -rushTrackRef.current.scrollWidth;
-      };
+      // Scroll target: land exactly on the hero (last image in the rush track)
+      const scrollTarget = -(rushHeroRef.current.offsetLeft);
 
-      // Rush animation - faster on mobile for better UX
-      const rushDuration = mobile ? 1.4 : 2.2;
-      const expandDuration = mobile ? 0.8 : 1.2;
+      const tl = gsap.timeline();
 
-      // Rush animation
+      // ── Rush scroll + frame expansion — one synchronized motion ──
+      // Both use the same duration and easing so they move as one gesture.
+      // power3.inOut starts slow (you see images in the small frame),
+      // accelerates through the middle, and settles on the hero at full screen.
       tl.to(rushTrackRef.current, {
-        x: calcFinalX,
-        duration: rushDuration,
-        ease: "power3.inOut",
-      });
+        x: scrollTarget,
+        duration: animDuration,
+        ease: animEase,
+      }, 0);
 
-      // Fade out rush track completely first
-      tl.to(rushTrackRef.current, {
-        opacity: 0,
-        duration: 0.4,
-        ease: "power2.out",
-      }, `-=0.5`);
-
-      // Fade in hero image as rush track fades
-      tl.to(heroImageRef.current, {
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.inOut",
-      }, "-=0.3");
-
-      // Hide rush track
-      tl.set(rushTrackRef.current, { display: "none" });
-
-      // Frame expands to full screen - slightly delayed for cleaner transition
       tl.to(frameRef.current, {
-        width: "100vw",
-        height: "100vh",
-        borderRadius: "0px",
-        duration: expandDuration,
-        ease: "power3.out",
-      }, "-=0.3");
+        clipPath: "inset(0% 0% round 0px)",
+        duration: animDuration,
+        ease: animEase,
+      }, 0);
 
+      // ── Phase transition — fires near the end so nav can start loading ──
       tl.call(() => {
         setPhase("hero");
         onRushComplete();
-      }, [], "-=0.4");
+      }, [], animDuration * 0.75);
 
-      // Gradient slides up from bottom
+      // ── Settled label — main animation complete ──
+      tl.addLabel("settled", animDuration);
+
+      // ── Swap rush track for real hero (invisible — same image, same styles) ──
+      tl.set(rushTrackRef.current, { display: "none" }, "settled");
+
+
+      // ── Gradient slides up for text readability ──
       tl.to(gradientRef.current, {
         yPercent: 0,
         opacity: 1,
         duration: 1,
         ease: "power2.out",
-      }, "-=0.5");
+      }, "settled");
 
-      // Text reveal starts during frame expansion for seamless feel
+      // ── Text reveals — staggered entrance ──
       tl.to(nameRef.current, {
         opacity: 1,
         y: 0,
         duration: 0.8,
         ease: "power3.out",
-      }, "-=0.8");
+      }, "settled+=0.3");
 
       tl.to(subtitleRef.current, {
         opacity: 1,
         y: 0,
         duration: 0.6,
         ease: "power3.out",
-      }, "-=0.5");
+      }, "settled+=0.5");
 
       tl.to(scrollIndicatorRef.current, {
         opacity: 1,
         duration: 0.5,
         ease: "power2.out",
-      }, "-=0.3");
+      }, "settled+=0.65");
     },
     { scope: containerRef, dependencies: [isActive] }
   );
@@ -186,28 +174,36 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
     <div ref={containerRef} className="relative h-screen bg-primary">
       <div className="fixed inset-0 h-screen w-full flex items-center justify-center overflow-hidden z-0">
 
-        {/* Frame container - responsive initial sizing */}
+        {/* Frame — full viewport size, clipPath creates the small centered box look */}
         <div
           ref={frameRef}
-          className="relative overflow-hidden bg-primary w-[92vw] md:w-[85vw] h-[65vh] md:h-[75vh] rounded-xl"
+          className="relative overflow-hidden bg-primary w-full h-full"
+          style={{ willChange: "clip-path" }}
         >
-          {/* Hero image - flipped horizontally, unoptimized for full quality */}
+          {/* Hero image — visible from the start, hidden behind rush track z-index */}
           <div
             ref={heroImageRef}
-            className="absolute inset-0 w-full h-full opacity-0"
+            className="absolute inset-0 w-full h-full"
           >
-            <Image
-              src={heroImage}
-              alt="Ace Suasola Photography"
-              fill
-              className="object-cover"
-              style={{ transform: "scaleX(-1)", objectPosition: "center 35%" }}
-              priority
-              quality={100}
-              sizes="100vw"
-              unoptimized
-            />
-            {/* Gradient overlay for text readability - animates up */}
+            {/* Ken Burns wrapper — only the image scales, overlays stay fixed */}
+            <div
+              ref={kenBurnsRef}
+              className="absolute inset-0 w-full h-full"
+              style={{ willChange: "transform" }}
+            >
+              <Image
+                src={heroImage}
+                alt="Ace Suasola Photography"
+                fill
+                className="object-cover"
+                style={{ transform: "scaleX(-1)", objectPosition: "center 35%" }}
+                priority
+                quality={100}
+                sizes="100vw"
+                unoptimized
+              />
+            </div>
+            {/* Gradient overlay for text readability — animates up from bottom */}
             <div
               ref={gradientRef}
               className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-[30]"
@@ -216,10 +212,10 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
             <div className="absolute inset-0 bg-black/10 z-[25]" />
           </div>
 
-          {/* Rush track - responsive image sizing */}
+          {/* Rush track — seamless images, hero is the final slide */}
           <div
             ref={rushTrackRef}
-            className="absolute top-0 left-0 flex items-stretch will-change-transform z-[80] gap-1"
+            className="absolute top-0 left-0 flex items-stretch will-change-transform z-[80]"
             style={{ width: "fit-content", height: "100%" }}
           >
             <div className="relative flex-shrink-0 bg-primary w-screen" style={{ height: "100%" }} />
@@ -228,10 +224,20 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
                 <img src={src} alt="" className="w-full h-full object-cover" loading="eager" />
               </div>
             ))}
+            {/* Hero — last image in the rush, fills viewport when frame is fully expanded */}
+            <div ref={rushHeroRef} className="relative flex-shrink-0 w-screen" style={{ height: "100%" }}>
+              <img
+                src={heroImage}
+                alt=""
+                className="w-full h-full object-cover"
+                style={{ transform: "scaleX(-1)", objectPosition: "center 35%" }}
+                loading="eager"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Name overlay - centered on mobile, lower-center on desktop */}
+        {/* Name overlay — centered on mobile, lower-left on desktop */}
         <div className="absolute inset-0 flex items-center justify-center md:items-end md:justify-start p-4 sm:p-8 md:p-16 md:pb-[20vh] z-[40] pointer-events-none">
           <div className="text-center md:text-left">
             <div ref={nameRef} className="opacity-0">
@@ -256,7 +262,7 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
           </div>
         </div>
 
-        {/* Scroll indicator - bottom right, hidden on small mobile */}
+        {/* Scroll indicator — bottom right, hidden on small mobile */}
         <div
           ref={scrollIndicatorRef}
           className="absolute bottom-4 sm:bottom-8 right-4 sm:right-8 md:right-16 z-[40] opacity-0 hidden sm:block"
