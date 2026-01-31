@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     siteName: "Ace Suasola Photography",
     images: [
       {
-        url: "/og-image.jpg",
+        url: `${SITE_URL}/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "Ace Suasola, Concert and Wedding Photographer in Vancouver, BC",
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
     description:
       "Ace Suasola is a professional concert and wedding photographer in Vancouver, BC. Live music, weddings, and creative projects.",
     creator: "@acesuasola",
-    images: ["/og-image.jpg"],
+    images: [`${SITE_URL}/og-image.jpg`],
   },
   robots: {
     index: true,
