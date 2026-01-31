@@ -70,7 +70,7 @@ export default function ContactPage() {
               ref={subtitleRef}
               className="font-body text-white/50 text-base sm:text-lg md:text-xl mt-4 sm:mt-6 max-w-lg opacity-0"
             >
-              Have a project in mind? Let's create something together.
+              Have a project in mind? Whether it&#39;s a concert, wedding, or creative shoot in Vancouver, let&#39;s create something together.
             </p>
           </div>
 
@@ -136,10 +136,10 @@ export default function ContactPage() {
                     Based In
                   </h3>
                   <p className="font-body text-white">
-                    Vancouver, BC
+                    Vancouver, British Columbia
                   </p>
                   <p className="font-body text-white/50 text-sm mt-1">
-                    Available worldwide
+                    Available for events across BC and worldwide
                   </p>
                 </div>
               </div>

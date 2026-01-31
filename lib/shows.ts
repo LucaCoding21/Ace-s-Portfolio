@@ -43,6 +43,7 @@ export interface Show {
   title: string;
   date: string;
   venue?: string;
+  description: string;
   coverImage: string;
   images: string[];
 }
@@ -54,6 +55,8 @@ export const shows: Show[] = [
     title: "CONCERTS",
     date: "2024",
     venue: "Live Music",
+    description:
+      "Concert and live music photography by Ace Suasola in Vancouver, BC. A portfolio of high-energy images captured at music festivals, intimate club shows, and live performances across Metro Vancouver venues. Specializing in low-light concert photography that captures the raw energy of live music.",
     coverImage: allPhotos[0],
     images: allPhotos,
   },
@@ -62,6 +65,8 @@ export const shows: Show[] = [
     title: "WEDDINGS",
     date: "2024",
     venue: "Timeless Moments",
+    description:
+      "Wedding photography by Ace Suasola in Vancouver and across British Columbia. Authentic, candid moments from ceremonies, receptions, and couple portraits. From downtown Vancouver venues to scenic BC destinations, each wedding gallery tells the full story of the day.",
     coverImage: newPhotos.weddings[0],
     images: newPhotos.weddings,
   },
@@ -70,6 +75,8 @@ export const shows: Show[] = [
     title: "PROJECTS",
     date: "2024",
     venue: "Creative Work",
+    description:
+      "Creative photography projects and commissioned work by Ace Suasola. A curated collection of portraits, editorial shoots, and artistic photography based out of Vancouver, BC. Available for commercial, editorial, and personal creative projects.",
     coverImage: newPhotos.projects[0],
     images: newPhotos.projects,
   },

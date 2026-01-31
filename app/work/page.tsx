@@ -13,9 +13,15 @@ import CustomCursor from "@/components/CustomCursor";
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const categoryDescriptions: Record<string, string> = {
-  concerts: "Live music photography",
-  weddings: "Timeless moments",
-  projects: "Creative work",
+  concerts: "Live music photography in Vancouver",
+  weddings: "Wedding photography in Vancouver, BC",
+  projects: "Creative photography projects",
+};
+
+const categoryAlts: Record<string, string> = {
+  concerts: "Concert photography portfolio, live music in Vancouver, BC",
+  weddings: "Wedding photography portfolio, ceremonies and receptions in Vancouver",
+  projects: "Creative photography projects by Ace Suasola in Vancouver",
 };
 
 export default function WorkPage() {
@@ -82,7 +88,7 @@ export default function WorkPage() {
           Work
         </h1>
         <p className="font-body text-white/50 text-base sm:text-lg mt-4 max-w-xl">
-          A collection of moments captured through the lens.
+          A collection of moments captured through the lens, from concert stages and wedding days to creative projects across Vancouver, BC.
         </p>
       </section>
 
@@ -100,7 +106,7 @@ export default function WorkPage() {
               {/* Background Image */}
               <Image
                 src={show.coverImage}
-                alt={show.title}
+                alt={categoryAlts[show.slug] || show.title}
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                 sizes="100vw"
@@ -143,7 +149,7 @@ export default function WorkPage() {
         <div ref={ctaImageRef} className="absolute inset-0 h-[160%] -top-[30%]">
           <Image
             src="/images/optimized/new-photos/58.jpg"
-            alt="Book a session"
+            alt="Book a photography session with Ace Suasola in Vancouver"
             fill
             className="object-cover object-[center_70%]"
             sizes="100vw"

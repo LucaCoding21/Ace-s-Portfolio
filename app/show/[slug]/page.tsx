@@ -115,7 +115,7 @@ export default function ShowPage() {
         >
           <Image
             src={show.coverImage}
-            alt={show.title}
+            alt={`${show.title} photography by Ace Suasola, ${show.venue}, Vancouver BC`}
             fill
             className="object-cover"
             sizes="100vw"
@@ -161,7 +161,7 @@ export default function ShowPage() {
               >
                 <Image
                   src={image}
-                  alt={`${show.title} - Image ${index + 1}`}
+                  alt={`${show.title.toLowerCase()} photography in Vancouver, photo ${index + 1}`}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                   sizes="100vw"

@@ -20,7 +20,7 @@ const config: Config = {
         display: ["var(--font-space)", "sans-serif"],
         body: ["var(--font-inter)", "sans-serif"],
         mono: ["var(--font-jetbrains)", "monospace"],
-        serif: ["var(--font-playfair)", "serif"],
+        serif: ["var(--font-bodoni)", "serif"],
       },
     },
   },

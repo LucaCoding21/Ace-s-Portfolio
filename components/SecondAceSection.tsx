@@ -43,36 +43,44 @@ interface SecondAceSectionProps {
 
 // Featured concert photos
 const concertPhotos = [
-  { src: "/images/newpics/guitarist.jpg", caption: "Stage Presence" },
-  { src: "/images/optimized/new-photos/25.jpg", caption: "The Jam" },
-  { src: "/images/optimized/new-photos/40.jpg", caption: "The Crowd" },
-  { src: "/images/newpics/DJ.jpg", caption: "Party Vibes" },
-  { src: "/images/optimized/new-photos/49.jpg", caption: "Performance" },
+  { src: "/images/newpics/guitarist.jpg", caption: "Stage Presence", alt: "Guitarist performing live on stage in Vancouver" },
+  { src: "/images/optimized/new-photos/25.jpg", caption: "The Jam", alt: "Live jam session captured at a Vancouver music venue" },
+  { src: "/images/optimized/new-photos/40.jpg", caption: "The Crowd", alt: "Concert crowd energy during a live show in Vancouver" },
+  { src: "/images/newpics/DJ.jpg", caption: "Party Vibes", alt: "DJ performing at a Vancouver nightlife event" },
+  { src: "/images/optimized/new-photos/49.jpg", caption: "Performance", alt: "Artist performing live at a music event in Vancouver, BC" },
 ];
 
 // Wedding photos section
 const weddingPhotos = [
-  { src: "/images/newpics/wedding9.jpg", caption: "First Dance" },
-  { src: "/images/newpics/wedding8.jpg", caption: "The Bride" },
-  { src: "/images/newpics/wedding1.jpg", caption: "Golden Hour" },
-  { src: "/images/newpics/wedding3.jpg", caption: "Celebration" },
-  { src: "/images/newpics/wedding2.jpg", caption: "Forever" },
+  { src: "/images/newpics/wedding9.jpg", caption: "First Dance", alt: "Couple sharing their first dance at a Vancouver wedding" },
+  { src: "/images/newpics/wedding8.jpg", caption: "The Bride", alt: "Bridal portrait captured on a wedding day in Vancouver" },
+  { src: "/images/newpics/wedding1.jpg", caption: "Golden Hour", alt: "Golden hour wedding portrait in Vancouver, BC" },
+  { src: "/images/newpics/wedding3.jpg", caption: "Celebration", alt: "Wedding celebration moment at a Vancouver venue" },
+  { src: "/images/newpics/wedding2.jpg", caption: "Forever", alt: "Intimate wedding moment photographed in Vancouver" },
 ];
 
 // Project photos with custom positioning
+const projectAlts = [
+  "Creative photography project by Ace Suasola in Vancouver",
+  "Portrait and editorial photography project in BC",
+  "Vancouver-based creative photography work",
+  "Commissioned photography project in Vancouver, BC",
+  "Creative visual project by a Vancouver photographer",
+];
 const projectPhotos = newPhotos.projects.map((src, i) => ({
   src,
   caption: ["Project I", "Project II", "Project III", "Project IV", "Project V"][i],
+  alt: projectAlts[i],
   objectPosition: [undefined, "center 85%", undefined, "center 70%", undefined][i], // Project II and IV positioned lower
 }));
 
 // Horizontal scroll photos - 5 photos with category links
 const horizontalPhotos = [
-  { src: allPhotos[35], category: "concerts", label: "Concerts" },
-  { src: newPhotos.weddings[4], category: "weddings", label: "Weddings" },
-  { src: allPhotos[40], category: "concerts", label: "Concerts" },
-  { src: newPhotos.projects[4], category: "projects", label: "Projects" },
-  { src: allPhotos[45], category: "concerts", label: "Concerts" },
+  { src: allPhotos[35], category: "concerts", label: "Concerts", alt: "Concert performance photographed in Vancouver" },
+  { src: newPhotos.weddings[4], category: "weddings", label: "Weddings", alt: "Wedding moment captured by a Vancouver photographer" },
+  { src: allPhotos[40], category: "concerts", label: "Concerts", alt: "Live music photography at a Vancouver venue" },
+  { src: newPhotos.projects[4], category: "projects", label: "Projects", alt: "Creative photography project in Vancouver, BC" },
+  { src: allPhotos[45], category: "concerts", label: "Concerts", alt: "High-energy concert photo from a Vancouver show" },
 ];
 
 export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
@@ -319,7 +327,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
   if (!isVisible) return null;
 
   const renderGalleryItem = (
-    photo: { src: string; caption: string; objectPosition?: string },
+    photo: { src: string; caption: string; alt?: string; objectPosition?: string },
     index: number,
     sectionKey: string,
     refs: React.MutableRefObject<(HTMLDivElement | null)[]>,
@@ -352,7 +360,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         <div className="gallery-image absolute inset-0 w-full h-[120%] -top-[10%]">
           <Image
             src={photo.src}
-            alt={photo.caption}
+            alt={photo.alt || photo.caption}
             fill
             className={`object-cover transition-transform duration-700 ease-out ${hoveredIndex === key ? 'scale-[1.02]' : 'scale-100'
               }`}
@@ -401,7 +409,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
               </p>
             </div>
             <p className="font-body text-white/40 text-base md:text-lg mt-6 max-w-2xl leading-relaxed ml-auto">
-              Capturing the raw energy and emotion of live performances. From intimate venues to massive festivals, every show tells a unique story.
+              Capturing the raw energy and emotion of live performances across Vancouver and beyond. From intimate venues to outdoor festivals, every show tells a story worth reliving.
             </p>
           </div>
 
@@ -444,7 +452,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
             </p>
           </div>
           <p className="font-body text-white/40 text-base md:text-lg mt-6 max-w-2xl leading-relaxed">
-            Preserving the beauty and emotion of your special day. Every glance, every smile, every tear of joy, captured forever.
+            Documenting the beauty and emotion of your wedding day in Vancouver and across British Columbia. Every glance, every smile, every tear of joy, preserved forever.
           </p>
         </div>
 
@@ -521,7 +529,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
               <span className="font-serif italic font-normal text-yellow-500/60">Tells a Story</span>
             </h2>
             <p className="font-body text-white/40 text-base md:text-lg mt-8 leading-relaxed">
-              From the electric atmosphere of live concerts to the intimate moments of a wedding day, I capture the emotions that make each event unique.
+              From the electric atmosphere of live concerts in Vancouver to the intimate moments of a wedding celebration, I photograph the emotions that make each event one of a kind.
             </p>
             <motion.a
               href="/contact"
@@ -573,7 +581,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         >
           <Image
             src={allPhotos[5]}
-            alt="Concert"
+            alt="Live concert photography by Ace Suasola in Vancouver"
             fill
             className="object-cover"
             sizes="22vw"
@@ -587,7 +595,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         >
           <Image
             src="/images/newpics/wedding5.jpg"
-            alt="Wedding"
+            alt="Wedding photography moment captured in Vancouver, BC"
             fill
             className="object-cover"
             sizes="24vw"
@@ -601,7 +609,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         >
           <Image
             src={newPhotos.projects[2]}
-            alt="Project"
+            alt="Creative photography project by a Vancouver photographer"
             fill
             className="object-cover"
             sizes="20vw"
@@ -615,7 +623,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         >
           <Image
             src={allPhotos[25]}
-            alt="Concert"
+            alt="Musician performing live at a Vancouver music venue"
             fill
             className="object-cover"
             sizes="22vw"
@@ -656,7 +664,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
             >
               <Image
                 src={photo.src}
-                alt={`Gallery photo ${index + 1}`}
+                alt={photo.alt}
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                 sizes="(max-width: 768px) 75vw, 35vw"
@@ -699,7 +707,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
                     <div className="w-[15vw] sm:w-[10vw] md:w-[7vw] aspect-[3/4] relative rounded-sm overflow-hidden">
                       <Image
                         src="/acephoto.jpg"
-                        alt="Ace Suasola"
+                        alt="Ace Suasola, Vancouver-based photographer"
                         fill
                         className="object-cover"
                         sizes="20vw"
@@ -742,7 +750,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
             <div className="absolute inset-0 overflow-hidden">
               <Image
                 src="/images/footer.jpg"
-                alt="Ace Suasola"
+                alt="Ace Suasola, Vancouver photographer, on location"
                 fill
                 className="object-cover object-[25%_center] md:object-center"
                 style={{ transform: "scaleX(-1)" }}
@@ -757,8 +765,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
                 Capturing moments that matter.
               </h2>
               <p className="font-body text-white/60 text-sm sm:text-base md:text-lg lg:text-xl mt-6 sm:mt-8 max-w-2xl leading-relaxed">
-                Based in Vancouver, available worldwide. Specializing in concert photography,
-                weddings, and capturing the raw energy of live performances.
+                Based in Vancouver, BC and available for bookings worldwide. From concert stages to wedding ceremonies, I capture the moments that move you.
               </p>
 
               {/* Contact Info */}
