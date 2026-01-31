@@ -221,13 +221,15 @@ const structuredData = {
       name: "Ace Suasola",
       givenName: "Ace",
       familyName: "Suasola",
-      jobTitle: "Professional Photographer",
-      description: "Ace Suasola is a professional concert and wedding photographer based in Vancouver, British Columbia. Known for capturing high-energy live music moments and authentic wedding day stories.",
+      jobTitle: "Professional Concert & Wedding Photographer",
+      description:
+        "Ace Suasola is a professional concert and wedding photographer based in Vancouver, British Columbia. Specializing in live music photography at festivals, club shows, and arena tours, as well as full-day wedding coverage from ceremony to reception. Ace is known for capturing high-energy, authentic moments with a bold, cinematic editing style. Available for bookings across Metro Vancouver, the Fraser Valley, Whistler, and destinations throughout BC and beyond.",
       url: SITE_URL,
+      mainEntityOfPage: SITE_URL,
       image: {
         "@type": "ImageObject",
         url: `${SITE_URL}/acephoto.jpg`,
-        caption: "Ace Suasola, Vancouver photographer",
+        caption: "Ace Suasola, Vancouver concert and wedding photographer",
       },
       sameAs: [
         "https://instagram.com/acesuasola",
@@ -235,11 +237,43 @@ const structuredData = {
         "https://linkedin.com/in/acesuasola",
       ],
       worksFor: { "@id": `${SITE_URL}/#business` },
+      hasOccupation: {
+        "@type": "Occupation",
+        name: "Photographer",
+        occupationalCategory: "27-4021.00",
+        description:
+          "Professional photographer specializing in concert, wedding, and event photography in Vancouver, BC.",
+        skills: [
+          "Concert Photography",
+          "Wedding Photography",
+          "Live Music Photography",
+          "Event Photography",
+          "Portrait Photography",
+          "Editorial Photography",
+          "Photo Editing",
+          "Adobe Lightroom",
+          "Adobe Photoshop",
+          "Low-Light Photography",
+          "High-Speed Action Photography",
+          "Studio Lighting",
+          "On-Location Shooting",
+          "Client Direction",
+        ],
+      },
       knowsAbout: [
         "Concert Photography",
         "Wedding Photography",
         "Live Music Photography",
         "Event Photography",
+        "Portrait Photography",
+        "Editorial Photography",
+        "Festival Photography",
+        "Photo Editing and Retouching",
+        "Adobe Lightroom",
+        "Adobe Photoshop",
+        "Low-Light Photography",
+        "Studio and Natural Lighting",
+        "Cinematic Photo Editing",
       ],
       workLocation: {
         "@type": "City",
@@ -247,7 +281,15 @@ const structuredData = {
         containedInPlace: {
           "@type": "AdministrativeArea",
           name: "British Columbia",
+          containedInPlace: {
+            "@type": "Country",
+            name: "Canada",
+          },
         },
+      },
+      nationality: {
+        "@type": "Country",
+        name: "Canada",
       },
     },
     {
