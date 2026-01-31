@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { shows, allPhotos, newPhotos } from "@/lib/shows";
 
-const SITE_URL = "https://acesuasola.com";
+const SITE_URL = "https://ace-s-portfolio.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Static pages
