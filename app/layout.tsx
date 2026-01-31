@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Inter, JetBrains_Mono, Bodoni_Moda } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const SITE_URL = "https://acesuasola.com";
@@ -105,6 +106,9 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+  },
+  verification: {
+    google: "LS3CvEgbMmPLbdJp2jy-OfLxKK-OuDiCjHr4VZ6YUcs",
   },
   other: {
     "geo.region": "CA-BC",
@@ -280,6 +284,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrains.variable} ${bodoni.variable}`}>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-FC0LX7JRJX"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-FC0LX7JRJX');
+        `}
+      </Script>
       <body className="font-body bg-primary text-white antialiased">
         <div className="grain-overlay" aria-hidden="true" />
         {children}
