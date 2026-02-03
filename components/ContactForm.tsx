@@ -33,6 +33,7 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -44,14 +45,27 @@ export default function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    console.log("Form submitted:", formData);
+      const data = await res.json();
 
-    setIsSubmitted(true);
-    setIsSubmitting(false);
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong.");
+      }
+
+      setIsSubmitted(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send message.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   useGSAP(
@@ -182,6 +196,11 @@ export default function ContactForm() {
           placeholder="Tell me about your project..."
         />
       </div>
+
+      {/* Error */}
+      {error && (
+        <p className="font-body text-sm text-red-400">{error}</p>
+      )}
 
       {/* Submit */}
       <button
