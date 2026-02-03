@@ -112,7 +112,7 @@ export default function ContactPage() {
                       Instagram
                     </a>
                     <a
-                      href="https://youtube.com/@AceSuasola"
+                      href="https://www.youtube.com/channel/UCS7vf4Riw92qyM1gF7L6t_A"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-body text-white hover:text-white/70 transition-colors"
@@ -120,7 +120,7 @@ export default function ContactPage() {
                       YouTube
                     </a>
                     <a
-                      href="https://linkedin.com/in/acesuasola"
+                      href="https://www.linkedin.com/in/ace-suasola-02a137255/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="font-body text-white hover:text-white/70 transition-colors"

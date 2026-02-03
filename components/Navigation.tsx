@@ -330,7 +330,7 @@ export default function Navigation() {
               Instagram
             </a>
             <a
-              href="https://youtube.com/@AceSuasola"
+              href="https://www.youtube.com/channel/UCS7vf4Riw92qyM1gF7L6t_A"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs sm:text-sm tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"
@@ -339,7 +339,7 @@ export default function Navigation() {
               YouTube
             </a>
             <a
-              href="https://linkedin.com/in/acesuasola"
+              href="https://www.linkedin.com/in/ace-suasola-02a137255/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs sm:text-sm tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"

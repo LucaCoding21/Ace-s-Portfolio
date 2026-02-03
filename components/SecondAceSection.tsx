@@ -789,7 +789,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
                   Instagram
                 </a>
                 <a
-                  href="https://youtube.com/@AceSuasola"
+                  href="https://www.youtube.com/channel/UCS7vf4Riw92qyM1gF7L6t_A"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"
@@ -797,7 +797,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
                   YouTube
                 </a>
                 <a
-                  href="https://linkedin.com/in/acesuasola"
+                  href="https://www.linkedin.com/in/ace-suasola-02a137255/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-body text-white text-sm tracking-widest uppercase border-b border-white/30 pb-1 hover:border-white transition-colors"

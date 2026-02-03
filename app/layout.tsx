@@ -163,8 +163,8 @@ const structuredData = {
       email: "acesuasola@gmail.com",
       sameAs: [
         "https://instagram.com/acesuasola",
-        "https://youtube.com/@AceSuasola",
-        "https://linkedin.com/in/acesuasola",
+        "https://www.youtube.com/channel/UCS7vf4Riw92qyM1gF7L6t_A",
+        "https://www.linkedin.com/in/ace-suasola-02a137255/",
       ],
       knowsAbout: [
         "Concert Photography",
@@ -233,8 +233,8 @@ const structuredData = {
       },
       sameAs: [
         "https://instagram.com/acesuasola",
-        "https://youtube.com/@AceSuasola",
-        "https://linkedin.com/in/acesuasola",
+        "https://www.youtube.com/channel/UCS7vf4Riw92qyM1gF7L6t_A",
+        "https://www.linkedin.com/in/ace-suasola-02a137255/",
       ],
       worksFor: { "@id": `${SITE_URL}/#business` },
       hasOccupation: {
