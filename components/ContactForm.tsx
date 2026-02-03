@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { createPortal } from "react-dom";
 
 gsap.registerPlugin(useGSAP);
 
@@ -24,7 +25,6 @@ const shootTypes = [
 
 export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
-  const successRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -68,52 +68,104 @@ export default function ContactForm() {
     }
   };
 
-  useGSAP(
-    () => {
-      if (!isSubmitted || !successRef.current || !formRef.current) return;
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<SVGCircleElement>(null);
 
-      gsap.to(formRef.current, {
-        opacity: 0,
-        y: -20,
-        duration: 0.4,
-        ease: "power2.in",
-      });
+  const closeModal = () => {
+    const tl = gsap.timeline({
+      onComplete: () => {
+        setIsSubmitted(false);
+        setFormData({ name: "", email: "", shootType: "", message: "" });
+      },
+    });
+    tl.to(modalRef.current, {
+      opacity: 0,
+      scale: 0.95,
+      duration: 0.25,
+      ease: "power2.in",
+    });
+    tl.to(overlayRef.current, { opacity: 0, duration: 0.2 }, "<");
+  };
 
-      gsap.fromTo(
-        successRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.6, delay: 0.3, ease: "power3.out" }
-      );
-    },
-    { dependencies: [isSubmitted] }
-  );
+  useEffect(() => {
+    if (!isSubmitted || !overlayRef.current || !modalRef.current) return;
 
-  if (isSubmitted) {
-    return (
-      <div ref={successRef} className="py-12 opacity-0">
-        <div className="w-12 h-12 mb-6 rounded-full border border-white/30 flex items-center justify-center">
-          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <h3 className="font-display text-2xl font-bold text-white mb-3">Message Sent</h3>
-        <p className="font-body text-white/50 mb-8">
-          Thanks for reaching out. I'll get back to you soon.
-        </p>
-        <button
-          onClick={() => {
-            setIsSubmitted(false);
-            setFormData({ name: "", email: "", shootType: "", message: "" });
-          }}
-          className="font-mono text-xs text-white/50 hover:text-white transition-colors"
-        >
-          Send another message
-        </button>
-      </div>
+    const tl = gsap.timeline();
+
+    tl.fromTo(
+      overlayRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.3, ease: "power2.out" }
     );
-  }
+    tl.fromTo(
+      modalRef.current,
+      { opacity: 0, scale: 0.9, y: 20 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.4, ease: "back.out(1.7)" },
+      "-=0.15"
+    );
+
+    if (checkRef.current) {
+      const length = checkRef.current.getTotalLength?.() || 0;
+      if (length) {
+        gsap.set(checkRef.current, {
+          strokeDasharray: length,
+          strokeDashoffset: length,
+        });
+        tl.to(
+          checkRef.current,
+          { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" },
+          "-=0.1"
+        );
+      }
+    }
+  }, [isSubmitted]);
 
   return (
+    <>
+    {isSubmitted &&
+      createPortal(
+        <div
+          ref={overlayRef}
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          onClick={closeModal}
+          style={{ opacity: 0 }}
+        >
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div
+            ref={modalRef}
+            className="relative bg-[#111] border border-white/10 rounded-2xl p-8 sm:p-10 max-w-md w-full text-center"
+            onClick={(e) => e.stopPropagation()}
+            style={{ opacity: 0 }}
+          >
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full border-2 border-white/20 flex items-center justify-center">
+              <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+                <path
+                  ref={checkRef as React.Ref<SVGCircleElement>}
+                  d="M5 13l4 4L19 7"
+                  stroke="white"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3 className="font-display text-2xl sm:text-3xl font-bold text-white mb-3">
+              Message Sent
+            </h3>
+            <p className="font-body text-white/50 mb-8 text-sm sm:text-base">
+              Thanks for reaching out. I&apos;ll get back to you soon.
+            </p>
+            <button
+              onClick={closeModal}
+              className="w-full py-3 bg-white text-black font-body text-sm tracking-widest uppercase hover:bg-white/90 transition-colors rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>,
+        document.body
+      )}
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
       {/* Name */}
       <div>
@@ -221,5 +273,6 @@ export default function ContactForm() {
         )}
       </button>
     </form>
+    </>
   );
 }
