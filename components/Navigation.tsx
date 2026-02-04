@@ -18,6 +18,8 @@ export default function Navigation() {
   const headerRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const gradientOverlayRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuItemsRef = useRef<(HTMLAnchorElement | HTMLButtonElement | null)[]>([]);
   const workSubMenuRef = useRef<HTMLDivElement>(null);
@@ -88,15 +90,33 @@ export default function Navigation() {
     return () => document.body.classList.remove("menu-open");
   }, [isMenuOpen]);
 
-  // Fade in on mount - same timing as hero text
+  // Animate in on mount - slide down from above to feel connected to the rush animation
   useGSAP(() => {
     if (!logoRef.current || !menuButtonRef.current) return;
 
+    const targets = [menuButtonRef.current, logoRef.current, ctaRef.current].filter(Boolean);
+
     gsap.fromTo(
-      [logoRef.current, menuButtonRef.current],
-      { opacity: 0 },
-      { opacity: 1, duration: 0.8, ease: "power2.out" }
+      targets,
+      { opacity: 0, y: -40 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        stagger: 0.12,
+        ease: "power3.out",
+        delay: 0.15,
+      }
     );
+
+    // Fade in the top gradient softly
+    if (gradientOverlayRef.current) {
+      gsap.fromTo(
+        gradientOverlayRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: 1.5, ease: "power2.inOut", delay: 0.3 }
+      );
+    }
   }, []);
 
   useGSAP(
@@ -140,6 +160,8 @@ export default function Navigation() {
     { href: "/show/concerts", label: "Concerts" },
     { href: "/show/weddings", label: "Weddings" },
     { href: "/show/projects", label: "Projects" },
+    { href: "/show/cafes", label: "Cafes" },
+    { href: "/show/sports", label: "Sports" },
   ];
 
   const isWorkActive = pathname.startsWith("/show/") || pathname === "/work";
@@ -149,7 +171,7 @@ export default function Navigation() {
       {/* Fixed header - improved mobile spacing */}
       <header ref={headerRef} className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-4 sm:py-6 flex items-center justify-between">
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-transparent pointer-events-none -z-10" />
+        <div ref={gradientOverlayRef} className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-transparent pointer-events-none -z-10 opacity-0" />
         {/* Menu toggle button - white circle on the left */}
         <button
           ref={menuButtonRef}
@@ -191,7 +213,7 @@ export default function Navigation() {
             e.preventDefault();
             window.location.href = "/";
           }}
-          className="group absolute left-1/2 -translate-x-1/2 px-4 py-2 border border-white/30 transition-all duration-300 hover:border-white hover:bg-white/5"
+          className="group absolute left-1/2 -translate-x-1/2 px-4 py-2 border border-white/30 transition-all duration-300 hover:border-white hover:bg-white/5 opacity-0"
           ref={logoRef}
         >
           <span className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white transition-all duration-300 group-hover:tracking-widest">
@@ -204,10 +226,12 @@ export default function Navigation() {
           <span className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-white opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0" />
         </a>
 
-        {/* Get in Touch button - on the right */}
-        <AnimatedButton href="/contact">
-          Get in Touch
-        </AnimatedButton>
+        {/* Get in Touch button - on the right, hidden on mobile */}
+        <div ref={ctaRef} className="opacity-0 hidden md:block">
+          <AnimatedButton href="/contact">
+            Get in Touch
+          </AnimatedButton>
+        </div>
       </header>
 
       {/* Fullscreen menu overlay */}
@@ -229,13 +253,13 @@ export default function Navigation() {
           <span className="absolute w-5 h-[2px] bg-black -rotate-45 transition-all duration-300 ease-out" />
         </button>
 
-        <nav className="flex flex-col items-center gap-2 sm:gap-3 md:gap-4">
+        <nav className="flex flex-col items-center gap-3 sm:gap-4 md:gap-5">
           {/* Home */}
           <Link
             href="/"
             ref={(el) => { menuItemsRef.current[0] = el; }}
             onClick={() => setIsMenuOpen(false)}
-            className={`font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight transition-all duration-300 touch-manipulation ${
+            className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight transition-all duration-300 touch-manipulation ${
               pathname === "/"
                 ? "text-white"
                 : "text-white/40 hover:text-white"
@@ -250,7 +274,7 @@ export default function Navigation() {
             <button
               ref={(el) => { menuItemsRef.current[1] = el; }}
               onClick={() => setIsWorkExpanded(!isWorkExpanded)}
-              className={`font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight transition-all duration-300 touch-manipulation flex items-center gap-2 sm:gap-3 ${
+              className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight transition-all duration-300 touch-manipulation flex items-center gap-2 sm:gap-3 ${
                 isWorkActive
                   ? "text-white"
                   : "text-white/40 hover:text-white"
@@ -259,7 +283,7 @@ export default function Navigation() {
             >
               Work
               <span
-                className={`inline-block transition-transform duration-300 text-xl sm:text-2xl md:text-3xl ${
+                className={`inline-block transition-transform duration-300 text-2xl sm:text-3xl md:text-4xl ${
                   isWorkExpanded ? "rotate-45" : "rotate-0"
                 }`}
               >
@@ -272,21 +296,25 @@ export default function Navigation() {
               ref={workSubMenuRef}
               className="overflow-hidden h-0 opacity-0"
             >
-              <div className="flex flex-col items-center gap-1 sm:gap-2 pt-2 sm:pt-3">
-                {workSubLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`font-display text-lg sm:text-xl md:text-2xl tracking-wide transition-all duration-300 touch-manipulation ${
-                      pathname === link.href
-                        ? "text-white"
-                        : "text-white/50 hover:text-white hover:tracking-widest"
-                    }`}
-                    data-cursor-hover
-                  >
-                    {link.label}
-                  </Link>
+              <div className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 gap-y-1 pt-3 sm:pt-4 px-4">
+                {workSubLinks.map((link, index) => (
+                  <span key={link.href} className="flex items-center gap-2 sm:gap-3">
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`font-display text-base sm:text-lg md:text-xl tracking-wide transition-all duration-300 touch-manipulation whitespace-nowrap ${
+                        pathname === link.href
+                          ? "text-white"
+                          : "text-white/50 hover:text-white"
+                      }`}
+                      data-cursor-hover
+                    >
+                      {link.label}
+                    </Link>
+                    {index < workSubLinks.length - 1 && (
+                      <span className="text-white/25 text-xs select-none">·</span>
+                    )}
+                  </span>
                 ))}
               </div>
             </div>
@@ -297,7 +325,7 @@ export default function Navigation() {
             href="/contact"
             ref={(el) => { menuItemsRef.current[2] = el; }}
             onClick={() => setIsMenuOpen(false)}
-            className={`font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight transition-all duration-300 touch-manipulation ${
+            className={`font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight transition-all duration-300 touch-manipulation ${
               pathname === "/contact"
                 ? "text-white"
                 : "text-white/40 hover:text-white"
@@ -312,19 +340,19 @@ export default function Navigation() {
             href="/contact"
             ref={(el) => { menuItemsRef.current[3] = el; }}
             onClick={() => setIsMenuOpen(false)}
-            className="mt-2 sm:mt-4 px-6 sm:px-8 py-2 sm:py-3 border-2 border-yellow-500/60 bg-transparent text-yellow-500/60 font-display text-base sm:text-lg md:text-xl tracking-wide uppercase transition-all duration-300 hover:bg-yellow-500/60 hover:text-white touch-manipulation"
+            className="mt-3 sm:mt-5 px-8 sm:px-10 py-3 sm:py-4 border-2 border-yellow-500/60 bg-transparent text-yellow-500/60 font-display text-lg sm:text-xl md:text-2xl tracking-wide uppercase transition-all duration-300 hover:bg-yellow-500/60 hover:text-white touch-manipulation"
             data-cursor-hover
           >
             Book Now
           </Link>
 
           {/* Social links - responsive layout */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-4 sm:mt-6 opacity-60 px-4">
+          <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8 mt-5 sm:mt-8 opacity-60 px-4">
             <a
               href="https://instagram.com/acesuasola"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs sm:text-sm tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"
+              className="text-sm sm:text-base tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"
               data-cursor-hover
             >
               Instagram
@@ -333,7 +361,7 @@ export default function Navigation() {
               href="https://www.youtube.com/channel/UCS7vf4Riw92qyM1gF7L6t_A"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs sm:text-sm tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"
+              className="text-sm sm:text-base tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"
               data-cursor-hover
             >
               YouTube
@@ -342,7 +370,7 @@ export default function Navigation() {
               href="https://www.linkedin.com/in/ace-suasola-02a137255/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs sm:text-sm tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"
+              className="text-sm sm:text-base tracking-widest uppercase text-white/60 hover:text-white transition-colors py-2 touch-manipulation"
               data-cursor-hover
             >
               LinkedIn

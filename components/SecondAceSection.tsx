@@ -12,27 +12,15 @@ import Lightbox from "./Lightbox";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Arrow button component for section navigation
-function SectionArrow({ href }: { href: string }) {
+// Clickable section title component
+function SectionTitle({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <Link
       href={href}
-      className="inline-block transition-transform duration-300 ease-out hover:scale-[1.4] origin-[24%_76%] relative -translate-y-3 md:-translate-y-4"
+      className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight inline-block relative group"
     >
-      <svg
-        viewBox="0 0 50 50"
-        className="w-14 h-14 md:w-20 md:h-20"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      >
-        {/* Arrow head - long horizontal line at top */}
-        <line x1="5" y1="5" x2="45" y2="5" className="text-white" />
-        {/* Arrow head - long vertical line on right */}
-        <line x1="45" y1="5" x2="45" y2="45" className="text-white" />
-        {/* Short diagonal body/neck */}
-        <line x1="12" y1="38" x2="45" y2="5" className="text-white" />
-      </svg>
+      {children}
+      <span className="absolute bottom-0 left-0 w-full h-[2px] md:h-[3px] bg-yellow-500/70 origin-left scale-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100" />
     </Link>
   );
 }
@@ -399,9 +387,8 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
         {/* Concerts Section */}
         <div className="relative py-16 sm:py-24 md:py-40 bg-primary">
           <div className="px-4 sm:px-8 md:px-16 mb-12 sm:mb-16 md:mb-24 text-right ml-auto">
-            <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight inline-flex items-end gap-4">
-              Concerts
-              <SectionArrow href="/show/concerts" />
+            <h2>
+              <SectionTitle href="/show/concerts">Concerts</SectionTitle>
             </h2>
             <div className="mt-4">
               <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase">
@@ -442,9 +429,8 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
       {/* Weddings Section */}
       <div className="relative py-16 sm:py-24 md:py-40 bg-primary-light/30">
         <div className="px-4 sm:px-8 md:px-16 mb-12 sm:mb-16 md:mb-24">
-          <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight inline-flex items-end gap-4">
-            Weddings
-            <SectionArrow href="/show/weddings" />
+          <h2>
+            <SectionTitle href="/show/weddings">Weddings</SectionTitle>
           </h2>
           <div className="mt-4">
             <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase">
@@ -491,9 +477,8 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
               {renderGalleryItem(projectPhotos[0], 0, 'project', projectRefs, false, 'projects', projectPhotos)}
             </div>
             <div className="flex flex-col justify-center p-4 sm:p-8 md:p-12 order-1 md:order-none">
-              <h2 className="font-display text-[clamp(2.5rem,8vw,6rem)] font-bold text-white tracking-tight inline-flex items-end gap-4">
-                Projects
-                <SectionArrow href="/show/projects" />
+              <h2>
+                <SectionTitle href="/show/projects">Projects</SectionTitle>
               </h2>
               <p className="font-body text-yellow-500/60 text-sm md:text-base tracking-widest uppercase mt-4">
                 Creative Work

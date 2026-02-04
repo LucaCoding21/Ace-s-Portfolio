@@ -14,12 +14,18 @@ const descriptionMap: Record<string, string> = {
     "View Ace Suasola's wedding photography gallery showcasing ceremonies and receptions across Vancouver and British Columbia. Authentic, candid moments captured with an editorial eye. Now booking weddings for the upcoming season.",
   projects:
     "Explore Ace Suasola's creative photography projects including portraits, editorial shoots, and commissioned work in Vancouver, BC. A curated collection of artistic and commercial photography.",
+  cafes:
+    "Café and coffee culture photography by Ace Suasola in Vancouver, BC. Capturing the warmth, aesthetic, and atmosphere of local cafés, specialty coffee shops, and the people who bring them to life. Coming soon.",
+  sports:
+    "Sports and athletic photography by Ace Suasola in Vancouver, BC. High-energy coverage of local sports events, games, and athletic moments captured with precision and intensity. Coming soon.",
 };
 
 const titleMap: Record<string, string> = {
   concerts: "Concert Photography Gallery | Live Music in Vancouver, BC",
   weddings: "Wedding Photography Gallery | Vancouver & BC Weddings",
   projects: "Creative Photography Projects | Vancouver Photographer",
+  cafes: "Café Photography | Coffee Culture in Vancouver, BC",
+  sports: "Sports Photography | Athletic Events in Vancouver, BC",
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

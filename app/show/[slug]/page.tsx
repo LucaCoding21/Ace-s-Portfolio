@@ -102,6 +102,143 @@ export default function ShowPage() {
   const nextShow =
     currentIndex < shows.length - 1 ? shows[currentIndex + 1] : null;
 
+  // Coming Soon page
+  if (show.comingSoon) {
+    return (
+      <main ref={containerRef} className="relative min-h-screen bg-primary">
+        <CustomCursor />
+        <Navigation />
+
+        {/* Hero with overlay */}
+        <div className="relative h-[45vh] sm:h-[50vh] md:h-[55vh] overflow-hidden">
+          <div ref={heroRef} className="absolute inset-0">
+            <Image
+              src={show.coverImage}
+              alt={`${show.title} photography by Ace Suasola, ${show.venue}, Vancouver BC`}
+              fill
+              className="object-cover scale-105"
+              sizes="100vw"
+              quality={100}
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-primary" />
+          </div>
+
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-8 sm:pb-12 md:pb-16 px-4 sm:px-8">
+            <h1
+              ref={titleRef}
+              className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-8xl text-white text-center tracking-tight"
+            >
+              {show.title}
+            </h1>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-3 sm:mt-4 text-secondary">
+              <span className="text-xs sm:text-sm tracking-widest uppercase">{show.date}</span>
+              {show.venue && (
+                <>
+                  <span className="text-white/30 hidden sm:inline">/</span>
+                  <span className="text-xs sm:text-sm tracking-widest uppercase">{show.venue}</span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Coming Soon content */}
+        <section className="px-4 sm:px-8 py-16 sm:py-24 md:py-32">
+          <div className="max-w-2xl mx-auto text-center">
+            {/* Decorative line */}
+            <div className="flex items-center justify-center gap-4 mb-8 sm:mb-12">
+              <span className="h-px w-8 sm:w-12 bg-yellow-500/40" />
+              <span className="text-yellow-500/60 text-[10px] sm:text-xs tracking-[0.3em] uppercase font-display">
+                Coming Soon
+              </span>
+              <span className="h-px w-8 sm:w-12 bg-yellow-500/40" />
+            </div>
+
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl text-white tracking-tight mb-4 sm:mb-6">
+              Something new is brewing
+            </h2>
+            <p className="text-secondary text-sm sm:text-base md:text-lg leading-relaxed max-w-lg mx-auto mb-10 sm:mb-14">
+              {show.description}
+            </p>
+
+            {/* CTA */}
+            <Link
+              href="/contact"
+              className="inline-block px-6 sm:px-8 py-2.5 sm:py-3 border border-white/20 text-white text-xs sm:text-sm tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300 touch-manipulation"
+              data-cursor-hover
+            >
+              Get Notified
+            </Link>
+          </div>
+        </section>
+
+        {/* Show navigation */}
+        <section className="border-t border-white/10">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 sm:py-12 md:py-16">
+            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-4">
+              <div className="flex-1 w-full sm:w-auto order-2 sm:order-1">
+                {prevShow ? (
+                  <Link
+                    href={`/show/${prevShow.slug}`}
+                    className="group inline-flex flex-col items-center sm:items-start w-full sm:w-auto"
+                  >
+                    <span className="text-secondary text-[10px] sm:text-xs tracking-widest uppercase mb-1 sm:mb-2">
+                      Previous
+                    </span>
+                    <span className="font-display text-lg sm:text-xl md:text-2xl text-white group-hover:text-white/70 transition-colors text-center sm:text-left">
+                      {prevShow.title}
+                    </span>
+                  </Link>
+                ) : (
+                  <div />
+                )}
+              </div>
+
+              <Link
+                href="/work"
+                className="order-1 sm:order-2 px-5 sm:px-6 py-2.5 sm:py-3 border border-white/20 text-white text-xs sm:text-sm tracking-widest uppercase hover:bg-white hover:text-black transition-colors touch-manipulation"
+              >
+                All Work
+              </Link>
+
+              <div className="flex-1 w-full sm:w-auto flex justify-center sm:justify-end order-3">
+                {nextShow ? (
+                  <Link
+                    href={`/show/${nextShow.slug}`}
+                    className="group inline-flex flex-col items-center sm:items-end w-full sm:w-auto"
+                  >
+                    <span className="text-secondary text-[10px] sm:text-xs tracking-widest uppercase mb-1 sm:mb-2">
+                      Next
+                    </span>
+                    <span className="font-display text-lg sm:text-xl md:text-2xl text-white group-hover:text-white/70 transition-colors text-center sm:text-right">
+                      {nextShow.title}
+                    </span>
+                  </Link>
+                ) : (
+                  <div />
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-white/10 py-6 sm:py-8">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between text-secondary text-xs sm:text-sm">
+            <span>&copy; {new Date().getFullYear()} Ace Suasola</span>
+            <Link
+              href="/contact"
+              className="hover:text-white transition-colors"
+            >
+              Get in Touch
+            </Link>
+          </div>
+        </footer>
+      </main>
+    );
+  }
+
   return (
     <main ref={containerRef} className="relative min-h-screen bg-primary">
       <CustomCursor />

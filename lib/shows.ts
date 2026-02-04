@@ -46,6 +46,7 @@ export interface Show {
   description: string;
   coverImage: string;
   images: string[];
+  comingSoon?: boolean;
 }
 
 // Category-based portfolios
@@ -79,6 +80,28 @@ export const shows: Show[] = [
       "Creative photography projects and commissioned work by Ace Suasola. A curated collection of portraits, editorial shoots, and artistic photography based out of Vancouver, BC. Available for commercial, editorial, and personal creative projects.",
     coverImage: newPhotos.projects[0],
     images: newPhotos.projects,
+  },
+  {
+    slug: "cafes",
+    title: "CAFES",
+    date: "2025",
+    venue: "Café Culture",
+    description:
+      "Café and coffee culture photography by Ace Suasola in Vancouver, BC. Capturing the warmth, aesthetic, and atmosphere of local cafés, specialty coffee shops, and the people who bring them to life.",
+    coverImage: "/images/optimized/new-photos/3.jpg",
+    images: [],
+    comingSoon: true,
+  },
+  {
+    slug: "sports",
+    title: "SPORTS",
+    date: "2025",
+    venue: "Game Day",
+    description:
+      "Sports and athletic photography by Ace Suasola in Vancouver, BC. High-energy coverage of local sports events, games, and athletic moments captured with precision and intensity.",
+    coverImage: "/images/optimized/new-photos/18.jpg",
+    images: [],
+    comingSoon: true,
   },
 ];
 

@@ -100,7 +100,7 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
       // Hero is visible from the start — hidden behind rush track (z-80)
       gsap.set(heroImageRef.current, { opacity: 1 });
       if (kenBurnsRef.current) gsap.set(kenBurnsRef.current, { scale: 1, force3D: true });
-      if (gradientRef.current) gsap.set(gradientRef.current, { yPercent: 100, opacity: 0 });
+      if (gradientRef.current) gsap.set(gradientRef.current, { opacity: 0 });
 
       // Scroll target: land exactly on the hero (last image in the rush track)
       const scrollTarget = -(rushHeroRef.current.offsetLeft);
@@ -136,12 +136,11 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
       tl.set(rushTrackRef.current, { display: "none" }, "settled");
 
 
-      // ── Gradient slides up for text readability ──
+      // ── Gradient fades in for text readability ──
       tl.to(gradientRef.current, {
-        yPercent: 0,
         opacity: 1,
-        duration: 1,
-        ease: "power2.out",
+        duration: 1.5,
+        ease: "power2.inOut",
       }, "settled");
 
       // ── Text reveals — staggered entrance ──
@@ -206,8 +205,8 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
             {/* Gradient overlay for text readability — animates up from bottom */}
             <div
               ref={gradientRef}
-              className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-[30]"
-              style={{ transform: "translateY(100%)", opacity: 0 }}
+              className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent z-[30]"
+              style={{ opacity: 0 }}
             />
             <div className="absolute inset-0 bg-black/10 z-[25]" />
           </div>
