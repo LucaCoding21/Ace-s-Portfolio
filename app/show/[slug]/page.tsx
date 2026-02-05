@@ -298,7 +298,7 @@ export default function ShowPage() {
               >
                 <Image
                   src={image}
-                  alt={`${show.title.toLowerCase()} photography in Vancouver, photo ${index + 1}`}
+                  alt={show.imageAlts?.[index] || `${show.title.toLowerCase()} photography in Vancouver, photo ${index + 1}`}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                   sizes="100vw"

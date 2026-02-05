@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { allPhotos, newPhotos } from "@/lib/shows";
+import { allPhotos, newPhotos, shows } from "@/lib/shows";
 import { prefersReducedMotion } from "@/lib/animations";
 import Lightbox from "./Lightbox";
 
@@ -62,6 +62,21 @@ const projectPhotos = newPhotos.projects.map((src, i) => ({
   objectPosition: [undefined, "center 85%", undefined, "center 70%", undefined][i], // Project II and IV positioned lower
 }));
 
+// Featured cafe photos
+const cafeShow = shows.find(s => s.slug === "cafes");
+const cafeAlts = [
+  "Busy specialty coffee shop interior with customers in Vancouver",
+  "Barista making coffee with dreamy bokeh in warm golden light",
+  "Overhead view of latte art heart design with monstera leaves",
+  "Golden hour cafe interior with people socializing and hanging plants",
+  "Bohemian cafe interior with string lights and guitar decor",
+];
+const cafePhotos = newPhotos.cafes.map((src, i) => ({
+  src,
+  caption: ["The Scene", "The Craft", "Latte Art", "Golden Hour", "The Vibe"][i],
+  alt: cafeAlts[i],
+}));
+
 // Horizontal scroll photos - 5 photos with category links
 const horizontalPhotos = [
   { src: allPhotos[35], category: "concerts", label: "Concerts", alt: "Concert performance photographed in Vancouver" },
@@ -69,6 +84,7 @@ const horizontalPhotos = [
   { src: allPhotos[40], category: "concerts", label: "Concerts", alt: "Live music photography at a Vancouver venue" },
   { src: newPhotos.projects[4], category: "projects", label: "Projects", alt: "Creative photography project in Vancouver, BC" },
   { src: allPhotos[45], category: "concerts", label: "Concerts", alt: "High-energy concert photo from a Vancouver show" },
+  { src: newPhotos.cafes[0], category: "cafes", label: "Cafes", alt: "Specialty coffee shop interior in Vancouver" },
 ];
 
 export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
@@ -82,6 +98,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
   const concertRefs = useRef<(HTMLDivElement | null)[]>([]);
   const weddingRefs = useRef<(HTMLDivElement | null)[]>([]);
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cafeRefs = useRef<(HTMLDivElement | null)[]>([]);
   const feelEnergyRef = useRef<HTMLHeadingElement>(null);
   const hasAnimatedEntrance = useRef(false);
   const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
@@ -171,6 +188,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
       animateGallery(concertRefs.current);
       animateGallery(weddingRefs.current);
       animateGallery(projectRefs.current);
+      animateGallery(cafeRefs.current);
 
       // Animate "Feel the Energy" text to yellow on scroll
       if (feelEnergyRef.current && !reducedMotion) {
@@ -328,6 +346,7 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
       concerts: "Concerts",
       weddings: "Weddings",
       projects: "Projects",
+      cafes: "Cafes",
     };
     return (
       <div

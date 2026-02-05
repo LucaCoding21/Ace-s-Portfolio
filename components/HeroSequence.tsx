@@ -192,7 +192,7 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
             >
               <Image
                 src={heroImage}
-                alt="Ace Suasola, professional concert and wedding photographer based in Vancouver, BC"
+                alt="Ace Suasola, professional concert and wedding photographer based in Surrey, BC"
                 fill
                 className="object-cover"
                 style={{ transform: "scaleX(-1)", objectPosition: "center 35%" }}
@@ -241,11 +241,11 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
           <div className="text-center md:text-left">
             <div ref={nameRef} className="opacity-0">
               {/* One line on mobile, stacked on desktop */}
-              <h1 className="font-serif font-bold tracking-tight leading-[0.85] text-white">
+              <h1 className="font-body font-extrabold tracking-tight leading-[0.85] text-white">
                 <span className="md:hidden text-[clamp(2.2rem,11vw,14rem)]">ACE SUASOLA</span>
                 <span className="hidden md:block text-[clamp(3.5rem,15vw,14rem)]">ACE</span>
               </h1>
-              <h1 className="hidden md:block font-serif text-[clamp(2rem,8vw,7rem)] font-bold tracking-tight leading-[0.85] text-white -mt-2">
+              <h1 className="hidden md:block font-body text-[clamp(2rem,8vw,7rem)] font-extrabold tracking-tight leading-[0.85] text-white -mt-2">
                 SUASOLA
               </h1>
             </div>
@@ -255,7 +255,7 @@ export default function HeroSequence({ isActive, onRushComplete }: HeroSequenceP
               </p>
               <span className="hidden md:block w-px h-4 bg-yellow-500/40" />
               <p className="font-body text-xs sm:text-sm md:text-lg text-yellow-500/70 tracking-widest uppercase">
-                Vancouver, BC
+                Surrey, BC
               </p>
             </div>
           </div>
