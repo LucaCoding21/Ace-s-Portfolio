@@ -809,6 +809,22 @@ export default function SecondAceSection({ isVisible }: SecondAceSectionProps) {
                   LinkedIn
                 </a>
               </div>
+
+            </div>
+
+            {/* Site Credit - bottom left */}
+            <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-8 md:left-16 z-10">
+              <p className="font-body text-white/40 text-xs tracking-wide">
+                built with care by{" "}
+                <a
+                  href="https://cloverfield.studio/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/60 hover:text-white transition-colors"
+                >
+                  cloverfield
+                </a>
+              </p>
             </div>
           </div>
         </div>
