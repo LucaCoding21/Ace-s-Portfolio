@@ -3,7 +3,7 @@ import { Space_Grotesk, Inter, JetBrains_Mono, Bodoni_Moda } from "next/font/goo
 import Script from "next/script";
 import "./globals.css";
 
-const SITE_URL = "https://ace-s-portfolio.vercel.app";
+const SITE_URL = "https://acesuasola.com";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
